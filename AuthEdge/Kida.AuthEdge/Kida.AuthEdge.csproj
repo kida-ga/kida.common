@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(SolutionDir)ProjectReferences_$(SolutionName).txt" Condition="Exists('$(SolutionDir)ProjectReferences_$(SolutionName).txt')" />
+  <PropertyGroup>
+    <AssemblyName>Kida.AuthEdge</AssemblyName>
+    <RootNamespace>Kida</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <PackageId>Kida.AuthEdge</PackageId>
+    <Version>$(KidaPackageVersion)</Version>
+    <Description>Embeddable safe browser-authentication edge for trusted ASP.NET Core product hosts.</Description>
+    <PackageReadmeFile>PACKAGE.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <None Include="PACKAGE.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(KidaUsePackageReferences)' != 'true' and Exists('$(KidaServiceClientProj)')">
+      <ItemGroup><ProjectReference Include="$(KidaServiceClientProj)" /></ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup><PackageReference Include="Kida.Service.Client" /></ItemGroup>
+    </Otherwise>
+  </Choose>
+  <Choose>
+    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyHelpers)\HaleyHelpers.csproj')">
+      <ItemGroup><ProjectReference Include="$(HaleyHelpers)\HaleyHelpers.csproj"><Name>HaleyHelpers</Name></ProjectReference></ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup><PackageReference Include="Haley.Helpers" /></ItemGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <EmbeddedResource Include="Browser\password-change.html" LogicalName="Kida.AuthEdge.Browser.password-change.html" />
+    <EmbeddedResource Include="Browser\password-change.css" LogicalName="Kida.AuthEdge.Browser.password-change.css" />
+    <EmbeddedResource Include="Browser\password-change.js" LogicalName="Kida.AuthEdge.Browser.password-change.js" />
+    <EmbeddedResource Include="Browser\password-reset.html" LogicalName="Kida.AuthEdge.Browser.password-reset.html" />
+    <EmbeddedResource Include="Browser\password-reset.css" LogicalName="Kida.AuthEdge.Browser.password-reset.css" />
+    <EmbeddedResource Include="Browser\password-reset.js" LogicalName="Kida.AuthEdge.Browser.password-reset.js" />
+    <EmbeddedResource Include="Browser\mfa-enroll.html" LogicalName="Kida.AuthEdge.Browser.mfa-enroll.html" />
+    <EmbeddedResource Include="Browser\mfa-enroll.css" LogicalName="Kida.AuthEdge.Browser.mfa-enroll.css" />
+  </ItemGroup>
+</Project>

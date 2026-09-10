@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Kida.Access.Contracts\Kida.Access.Contracts.csproj" />
+  </ItemGroup>
+</Project>

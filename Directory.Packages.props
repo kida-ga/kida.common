@@ -1,0 +1,17 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Haley.Abstractions" Version="1.3.14" />
+    <PackageVersion Include="Haley.Extensions" Version="2.4.15" />
+    <PackageVersion Include="Haley.Helpers" Version="2.4.14" />
+    <PackageVersion Include="Haley.Helpers.Web" Version="0.2.11" />
+    <PackageVersion Include="Haley.Rest" Version="3.0.29" />
+    <PackageVersion Include="Kida.Contracts" Version="$(KidaPackageVersion)" />
+    <PackageVersion Include="Kida.Service.Client" Version="$(KidaPackageVersion)" />
+    <PackageVersion Include="Microsoft.IdentityModel.Protocols" Version="8.20.0" />
+    <PackageVersion Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.20.0" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.20.0" />
+  </ItemGroup>
+</Project>

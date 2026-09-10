@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(SolutionDir)ProjectReferences_$(SolutionName).txt"
+          Condition="Exists('$(SolutionDir)ProjectReferences_$(SolutionName).txt')" />
+  <Choose>
+    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyAbstractions)\HaleyAbstractions.csproj')">
+      <ItemGroup>
+        <ProjectReference Include="$(HaleyAbstractions)\HaleyAbstractions.csproj"><Name>HaleyAbstractions</Name></ProjectReference>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup><PackageReference Include="Haley.Abstractions" /></ItemGroup>
+    </Otherwise>
+  </Choose>
+  <Choose>
+    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyExtensions)\HaleyExtensions.csproj')">
+      <ItemGroup>
+        <ProjectReference Include="$(HaleyExtensions)\HaleyExtensions.csproj"><Name>HaleyExtensions</Name></ProjectReference>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup><PackageReference Include="Haley.Extensions" /></ItemGroup>
+    </Otherwise>
+  </Choose>
+  <Choose>
+    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyHelpers)\HaleyHelpers.csproj')">
+      <ItemGroup>
+        <ProjectReference Include="$(HaleyHelpers)\HaleyHelpers.csproj"><Name>HaleyHelpers</Name></ProjectReference>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup><PackageReference Include="Haley.Helpers" /></ItemGroup>
+    </Otherwise>
+  </Choose>
+</Project>

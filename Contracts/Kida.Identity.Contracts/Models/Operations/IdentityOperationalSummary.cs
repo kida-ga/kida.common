@@ -1,0 +1,2 @@
+namespace Kida.Models;
+public sealed record IdentityOperationalSummary(long TotalUsers, long ActiveUsers, long ActiveClients, long ActiveSessions, long PendingChallenges, long ActiveVerificationGrants, long FederatedLinks, long VerifiedMfaMethods, long ActiveRefreshFamilies, long FailedLoginsLast24Hours, long PendingSamlRequests, long PendingSamlHandoffs, long PendingOutboxMessages, long FailedOutboxMessages, DateTimeOffset EvaluatedAt);

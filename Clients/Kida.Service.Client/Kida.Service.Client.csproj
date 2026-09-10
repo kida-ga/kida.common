@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(SolutionDir)ProjectReferences_$(SolutionName).txt" Condition="Exists('$(SolutionDir)ProjectReferences_$(SolutionName).txt')" />
+  <PropertyGroup>
+    <AssemblyName>Kida.Service.Client</AssemblyName>
+    <RootNamespace>Kida.Service.Client</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <PackageId>Kida.Service.Client</PackageId>
+    <Version>$(KidaPackageVersion)</Version>
+    <Description>Haley-based client for trusted product hosts communicating with Kida Service.</Description>
+    <PackageReadmeFile>PACKAGE.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <None Include="PACKAGE.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(KidaUsePackageReferences)' != 'true' and Exists('$(KidaIdentityContractsProj)') and Exists('$(KidaAccessContractsProj)') and Exists('$(KidaAccessDomainProj)') and Exists('$(KidaTenancyContractsProj)')">
+      <ItemGroup>
+        <ProjectReference Include="$(KidaIdentityContractsProj)" />
+        <ProjectReference Include="$(KidaAccessContractsProj)" />
+        <ProjectReference Include="$(KidaAccessDomainProj)" />
+        <ProjectReference Include="$(KidaTenancyContractsProj)" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup><PackageReference Include="Kida.Contracts" /></ItemGroup>
+    </Otherwise>
+  </Choose>
+  <Choose>
+    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyAbstractions)\HaleyAbstractions.csproj')">
+      <ItemGroup>
+        <ProjectReference Include="$(HaleyAbstractions)\HaleyAbstractions.csproj"><Name>HaleyAbstractions</Name></ProjectReference>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup><PackageReference Include="Haley.Abstractions" /></ItemGroup>
+    </Otherwise>
+  </Choose>
+  <Choose>
+    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyExtensions)\HaleyExtensions.csproj')">
+      <ItemGroup>
+        <ProjectReference Include="$(HaleyExtensions)\HaleyExtensions.csproj"><Name>HaleyExtensions</Name></ProjectReference>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup><PackageReference Include="Haley.Extensions" /></ItemGroup>
+    </Otherwise>
+  </Choose>
+  <Choose>
+    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyRest)\HaleyRest.csproj')">
+      <ItemGroup>
+        <ProjectReference Include="$(HaleyRest)\HaleyRest.csproj"><Name>HaleyRest</Name></ProjectReference>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup><PackageReference Include="Haley.Rest" /></ItemGroup>
+    </Otherwise>
+  </Choose>
+</Project>

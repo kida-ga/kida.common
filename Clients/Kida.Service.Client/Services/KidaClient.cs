@@ -471,6 +471,85 @@ internal sealed class KidaClient(
             KidaTenancyScopes.Manage,
             cancellationToken).ConfigureAwait(false);
 
+    public async ValueTask<TenantAdministrationSnapshot> InspectTenantAsync(Guid tenantId, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<TenantAdministrationSnapshot>(() => CreateRequest($"kida/tenancy/tenants/{tenantId:D}/details", cancellationToken), Method.GET, KidaTenancyScopes.Manage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<TenantDomainInfo> AddTenantDomainAsync(AddTenantDomainRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<TenantDomainInfo>(() => CreateJsonRequest($"kida/tenancy/tenants/{request.TenantId:D}/domains", request, cancellationToken), Method.POST, KidaTenancyScopes.Manage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask RemoveTenantDomainAsync(Guid tenantId, Guid domainId, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenWithoutBodyAsync(() => CreateRequest($"kida/tenancy/tenants/{tenantId:D}/domains/{domainId:D}", cancellationToken), Method.DELETE, KidaTenancyScopes.Manage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<TenantMembershipInfo> SetTenantMembershipAsync(SetTenantMembershipRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<TenantMembershipInfo>(() => CreateJsonRequest($"kida/tenancy/tenants/{request.TenantId:D}/memberships", request, cancellationToken), Method.PUT, KidaTenancyScopes.Manage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask RemoveTenantMembershipAsync(Guid tenantId, Guid membershipId, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenWithoutBodyAsync(() => CreateRequest($"kida/tenancy/tenants/{tenantId:D}/memberships/{membershipId:D}", cancellationToken), Method.DELETE, KidaTenancyScopes.Manage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<TenantInvitationReceipt> CreateTenantInvitationAsync(CreateTenantInvitationRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<TenantInvitationReceipt>(() => CreateJsonRequest($"kida/tenancy/tenants/{request.TenantId:D}/invitations", request, cancellationToken), Method.POST, KidaTenancyScopes.Manage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask RevokeTenantInvitationAsync(Guid tenantId, Guid invitationId, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenWithoutBodyAsync(() => CreateRequest($"kida/tenancy/tenants/{tenantId:D}/invitations/{invitationId:D}", cancellationToken), Method.DELETE, KidaTenancyScopes.Manage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<TenantSettingInfo> SetTenantSettingAsync(SetTenantSettingRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<TenantSettingInfo>(() => CreateJsonRequest($"kida/tenancy/tenants/{request.TenantId:D}/settings/{Uri.EscapeDataString(request.Key)}", request, cancellationToken), Method.PUT, KidaTenancyScopes.Manage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask RemoveTenantSettingAsync(Guid tenantId, string key, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenWithoutBodyAsync(() => CreateRequest($"kida/tenancy/tenants/{tenantId:D}/settings/{Uri.EscapeDataString(key)}", cancellationToken), Method.DELETE, KidaTenancyScopes.Manage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<IReadOnlyCollection<DeploymentInfo>> ListDeploymentsAsync(CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<IReadOnlyCollection<DeploymentInfo>>(() => CreateRequest("kida/tenancy/deployments", cancellationToken), Method.GET, KidaTenancyScopes.Manage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<DeploymentInfo> CreateDeploymentAsync(CreateDeploymentRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<DeploymentInfo>(() => CreateJsonRequest("kida/tenancy/deployments", request, cancellationToken), Method.POST, KidaTenancyScopes.Manage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<TenantDeploymentInfo> AssignTenantDeploymentAsync(AssignTenantDeploymentRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<TenantDeploymentInfo>(() => CreateJsonRequest($"kida/tenancy/tenants/{request.TenantId:D}/deployments", request, cancellationToken), Method.POST, KidaTenancyScopes.Manage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask UnassignTenantDeploymentAsync(Guid tenantId, Guid deploymentId, string familyCode, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenWithoutBodyAsync(() => CreateRequest($"kida/tenancy/tenants/{tenantId:D}/deployments/{deploymentId:D}/{Uri.EscapeDataString(familyCode)}", cancellationToken), Method.DELETE, KidaTenancyScopes.Manage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<EntitlementCatalogReceipt> RegisterEntitlementCatalogAsync(RegisterEntitlementCatalogRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<EntitlementCatalogReceipt>(() => CreateJsonRequest("kida/entitlements/catalog", request, cancellationToken), Method.POST, KidaEntitlementsScopes.CatalogRegister, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<EntitlementDecision> EvaluateEntitlementAsync(EvaluateEntitlementRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<EntitlementDecision>(() => CreateJsonRequest("kida/entitlements/evaluate", request, cancellationToken), Method.POST, KidaEntitlementsScopes.Evaluate, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<UsageReceipt> ReportEntitlementUsageAsync(ReportUsageRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<UsageReceipt>(() => CreateJsonRequest("kida/entitlements/usage", request, cancellationToken), Method.POST, KidaEntitlementsScopes.UsageReport, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<LicenseLeaseReceipt> AcquireLicenseAsync(AcquireLicenseRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<LicenseLeaseReceipt>(() => CreateJsonRequest("kida/entitlements/licenses/acquire", request, cancellationToken), Method.POST, KidaEntitlementsScopes.LicenseUse, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<LicenseLeaseReceipt> HeartbeatLicenseAsync(HeartbeatLicenseRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<LicenseLeaseReceipt>(() => CreateJsonRequest("kida/entitlements/licenses/heartbeat", request, cancellationToken), Method.POST, KidaEntitlementsScopes.LicenseUse, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask ReleaseLicenseAsync(ReleaseLicenseRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenWithoutBodyAsync(() => CreateJsonRequest("kida/entitlements/licenses/release", request, cancellationToken), Method.POST, KidaEntitlementsScopes.LicenseUse, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<AppCatalogReceipt> RegisterAppCatalogAsync(RegisterAppCatalogRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<AppCatalogReceipt>(() => CreateJsonRequest("kida/apps/catalog", request, cancellationToken), Method.POST, KidaAppsScopes.CatalogRegister, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<AppPage> SearchAppsAsync(string? query = null, string? status = null, int page = 1, int pageSize = 20, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<AppPage>(() => CreateRequest("kida/apps/catalog", cancellationToken).WithQuery(new QueryParam("query", query ?? string.Empty)).WithQuery(new QueryParam("status", status ?? string.Empty)).WithQuery(new QueryParam("page", Math.Max(page, 1).ToString(System.Globalization.CultureInfo.InvariantCulture))).WithQuery(new QueryParam("pageSize", Math.Clamp(pageSize, 1, 50).ToString(System.Globalization.CultureInfo.InvariantCulture))), Method.GET, KidaAppsScopes.CatalogRead, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<AppInstallationInfo> InstallAppAsync(InstallAppRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<AppInstallationInfo>(() => CreateJsonRequest("kida/apps/installations", request, cancellationToken), Method.POST, KidaAppsScopes.InstallationsManage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<IReadOnlyCollection<AppInstallationInfo>> ListAppInstallationsAsync(Guid tenantId, string hostAudience, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<IReadOnlyCollection<AppInstallationInfo>>(() => CreateRequest("kida/apps/installations", cancellationToken).WithQuery(new QueryParam("tenantId", tenantId.ToString("D"))).WithQuery(new QueryParam("audience", hostAudience)), Method.GET, KidaAppsScopes.InstallationsRead, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<AppComposition> ComposeAppsAsync(Guid tenantId, Guid? projectId, string hostAudience, CancellationToken cancellationToken = default)
+    {
+        var request = CreateRequest("kida/apps/composition", cancellationToken).WithQuery(new QueryParam("tenantId", tenantId.ToString("D"))).WithQuery(new QueryParam("audience", hostAudience));
+        if (projectId is not null) request.WithQuery(new QueryParam("projectId", projectId.Value.ToString("D")));
+        return await SendWithClientTokenAsync<AppComposition>(() => request, Method.GET, KidaAppsScopes.CompositionRead, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async ValueTask ReportAppHealthAsync(ReportAppHealthRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenWithoutBodyAsync(() => CreateJsonRequest("kida/apps/health", request, cancellationToken), Method.POST, KidaAppsScopes.HealthReport, cancellationToken).ConfigureAwait(false);
+
     public async ValueTask<UserIdentity> GetCurrentUserAsync(
         string userAccessToken,
         CancellationToken cancellationToken = default) =>

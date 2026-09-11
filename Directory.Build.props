@@ -16,6 +16,8 @@
     <KidaAccessContractsProj Condition="'$(KidaAccessContractsProj)' == ''">$(MSBuildThisFileDirectory)Contracts\Kida.Access.Contracts\Kida.Access.Contracts.csproj</KidaAccessContractsProj>
     <KidaAccessDomainProj Condition="'$(KidaAccessDomainProj)' == ''">$(MSBuildThisFileDirectory)Contracts\Kida.Access.Domain\Kida.Access.Domain.csproj</KidaAccessDomainProj>
     <KidaTenancyContractsProj Condition="'$(KidaTenancyContractsProj)' == ''">$(MSBuildThisFileDirectory)Contracts\Kida.Tenancy.Contracts\Kida.Tenancy.Contracts.csproj</KidaTenancyContractsProj>
+    <KidaEntitlementsContractsProj Condition="'$(KidaEntitlementsContractsProj)' == ''">$(MSBuildThisFileDirectory)Contracts\Kida.Entitlements.Contracts\Kida.Entitlements.Contracts.csproj</KidaEntitlementsContractsProj>
+    <KidaAppsContractsProj Condition="'$(KidaAppsContractsProj)' == ''">$(MSBuildThisFileDirectory)Contracts\Kida.Apps.Contracts\Kida.Apps.Contracts.csproj</KidaAppsContractsProj>
     <KidaServiceClientProj Condition="'$(KidaServiceClientProj)' == ''">$(MSBuildThisFileDirectory)Clients\Kida.Service.Client\Kida.Service.Client.csproj</KidaServiceClientProj>
   </PropertyGroup>
   <PropertyGroup Condition="'$(KidaUseHaleyPackageReferences)' != 'true'">

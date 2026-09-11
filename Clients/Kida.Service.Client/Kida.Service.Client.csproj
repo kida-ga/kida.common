@@ -14,12 +14,14 @@
     <None Include="PACKAGE.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <Choose>
-    <When Condition="'$(KidaUsePackageReferences)' != 'true' and Exists('$(KidaIdentityContractsProj)') and Exists('$(KidaAccessContractsProj)') and Exists('$(KidaAccessDomainProj)') and Exists('$(KidaTenancyContractsProj)')">
+    <When Condition="'$(KidaUsePackageReferences)' != 'true' and Exists('$(KidaIdentityContractsProj)') and Exists('$(KidaAccessContractsProj)') and Exists('$(KidaAccessDomainProj)') and Exists('$(KidaTenancyContractsProj)') and Exists('$(KidaEntitlementsContractsProj)') and Exists('$(KidaAppsContractsProj)')">
       <ItemGroup>
         <ProjectReference Include="$(KidaIdentityContractsProj)" />
         <ProjectReference Include="$(KidaAccessContractsProj)" />
         <ProjectReference Include="$(KidaAccessDomainProj)" />
         <ProjectReference Include="$(KidaTenancyContractsProj)" />
+        <ProjectReference Include="$(KidaEntitlementsContractsProj)" />
+        <ProjectReference Include="$(KidaAppsContractsProj)" />
       </ItemGroup>
     </When>
     <Otherwise>

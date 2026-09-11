@@ -5,7 +5,7 @@
     <IsPackable>true</IsPackable>
     <PackageId>Kida.Contracts</PackageId>
     <Version>$(KidaPackageVersion)</Version>
-    <Description>Public Kida Identity, Access, and Tenancy contracts for trusted product-host integrations.</Description>
+    <Description>Public Kida Identity, Access, Tenancy, Entitlements, and Apps contracts for trusted product-host integrations.</Description>
     <PackageReadmeFile>PACKAGE.md</PackageReadmeFile>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CollectKidaContractAssemblies</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
@@ -14,6 +14,8 @@
     <ProjectReference Include="..\Kida.Access.Contracts\Kida.Access.Contracts.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\Kida.Access.Domain\Kida.Access.Domain.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\Kida.Tenancy.Contracts\Kida.Tenancy.Contracts.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Kida.Entitlements.Contracts\Kida.Entitlements.Contracts.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Kida.Apps.Contracts\Kida.Apps.Contracts.csproj" PrivateAssets="all" />
     <PackageReference Include="Haley.Abstractions" />
     <PackageReference Include="Haley.Extensions" />
     <PackageReference Include="Haley.Helpers" />
@@ -25,6 +27,8 @@
       <BuildOutputInPackage Include="$(MSBuildThisFileDirectory)..\Kida.Access.Contracts\bin\$(Configuration)\$(TargetFramework)\Kida.Access.Contracts.dll" />
       <BuildOutputInPackage Include="$(MSBuildThisFileDirectory)..\Kida.Access.Domain\bin\$(Configuration)\$(TargetFramework)\Kida.Access.Domain.dll" />
       <BuildOutputInPackage Include="$(MSBuildThisFileDirectory)..\Kida.Tenancy.Contracts\bin\$(Configuration)\$(TargetFramework)\Kida.Tenancy.Contracts.dll" />
+      <BuildOutputInPackage Include="$(MSBuildThisFileDirectory)..\Kida.Entitlements.Contracts\bin\$(Configuration)\$(TargetFramework)\Kida.Entitlements.Contracts.dll" />
+      <BuildOutputInPackage Include="$(MSBuildThisFileDirectory)..\Kida.Apps.Contracts\bin\$(Configuration)\$(TargetFramework)\Kida.Apps.Contracts.dll" />
     </ItemGroup>
   </Target>
 </Project>

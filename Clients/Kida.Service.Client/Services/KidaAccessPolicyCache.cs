@@ -147,9 +147,10 @@ internal sealed class KidaAccessPolicyCache(
                 : [new AccessScopeRef("tenant", null), new AccessScopeRef(request.ScopeType, request.ScopeId)]);
         var definition = await GetDefinitionAsync(request.TenantId, request.Module, cancellationToken).ConfigureAwait(false);
         var clientScopes = clientGrant.AllowedScopes.ToHashSet(StringComparer.Ordinal);
+        var allowsAllAudienceScopes = KidaScopeGrant.IsAll(clientScopes);
         if (definition.ScopeActions is null || !definition.ScopeActions.Any(mapping =>
                 string.Equals(mapping.Action, request.Action, StringComparison.Ordinal) &&
-                clientScopes.Contains(mapping.Scope)))
+                (allowsAllAudienceScopes || clientScopes.Contains(mapping.Scope))))
             return new(false, "client_scope_denied", []);
         var entitlements = await GetSubjectSnapshotAsync(request.TenantId, request.Module, subjects, path, cancellationToken).ConfigureAwait(false);
         var evaluatedAt = timeProvider.GetUtcNow();

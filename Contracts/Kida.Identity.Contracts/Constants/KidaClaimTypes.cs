@@ -8,6 +8,7 @@ public static class KidaClaimTypes
     public const string ClientIdentifier = "client_identifier";
     public const string AuthorizedParty = "azp";
     public const string Scope = "scope";
+    public const string ScopeMode = "scope_mode";
     public const string TokenUse = "token_use";
     public const string OwnerTenantId = "owner_tenant_id";
 }

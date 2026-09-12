@@ -12,10 +12,15 @@ public static class KidaResourceAuthorization
     public static bool HasTokenUse(ClaimsPrincipal principal, string tokenUse) =>
         principal.HasClaim(KidaClaimTypes.TokenUse, tokenUse);
 
-    public static bool HasScope(ClaimsPrincipal principal, string requiredScope) =>
-        principal.FindAll(KidaClaimTypes.Scope)
+    public static bool HasScope(ClaimsPrincipal principal, string requiredScope)
+    {
+        var scopes = principal.FindAll(KidaClaimTypes.Scope)
             .SelectMany(claim => claim.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries))
-            .Contains(requiredScope, StringComparer.Ordinal);
+            .ToHashSet(StringComparer.Ordinal);
+        return scopes.Contains(requiredScope) ||
+               (scopes.Contains(KidaScopeGrant.All) &&
+                principal.HasClaim(KidaClaimTypes.ScopeMode, KidaScopeGrant.AllMode));
+    }
 
     /// <summary>
     /// Adds a machine-client policy. A user assertion can never satisfy this

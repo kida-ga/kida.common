@@ -48,6 +48,18 @@ public static class KidaInternalSecurityBoundary
     public static bool ContainsManagementScope(IEnumerable<OAuthClientResourceGrant>? grants) =>
         grants?.Any(grant => ContainsManagementScope(grant.AllowedScopes)) == true;
 
+    /// <summary>
+    /// Scopes that are never implied by a kida-service wildcard. They require a
+    /// separately and deliberately configured credential or explicit grant.
+    /// </summary>
+    public static bool IsProtectedWildcardScope(string? value)
+    {
+        var normalized = Normalize(value);
+        return IsManagementScope(normalized) ||
+               string.Equals(normalized, KidaIdentityScopes.ClientsManage, StringComparison.Ordinal) ||
+               string.Equals(normalized, "access.protected.manage", StringComparison.Ordinal);
+    }
+
     public static bool IsManagementClient(OAuthClientInfo? client) =>
         client is not null &&
         (IsAdminClientIdentifier(client.ClientIdentifier) ||

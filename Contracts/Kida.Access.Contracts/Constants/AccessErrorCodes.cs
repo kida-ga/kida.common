@@ -7,4 +7,5 @@ public static class AccessErrorCodes
     public const string Duplicate = "access.duplicate";
     public const string NotFound = "access.not_found";
     public const string InvalidCondition = "access.invalid_condition";
+    public const string ModuleNotDeletable = "access.module_not_deletable";
 }

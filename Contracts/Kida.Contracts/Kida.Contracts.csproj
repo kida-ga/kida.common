@@ -16,11 +16,26 @@
     <ProjectReference Include="..\Kida.Tenancy.Contracts\Kida.Tenancy.Contracts.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\Kida.Entitlements.Contracts\Kida.Entitlements.Contracts.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\Kida.Apps.Contracts\Kida.Apps.Contracts.csproj" PrivateAssets="all" />
-    <PackageReference Include="Haley.Abstractions" />
-    <PackageReference Include="Haley.Extensions" />
-    <PackageReference Include="Haley.Helpers" />
     <None Include="PACKAGE.md" Pack="true" PackagePath="\" />
   </ItemGroup>
+  <Choose>
+    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyAbstractions)\HaleyAbstractions.csproj')">
+      <ItemGroup><ProjectReference Include="$(HaleyAbstractions)\HaleyAbstractions.csproj"><Name>HaleyAbstractions</Name></ProjectReference></ItemGroup>
+    </When>
+    <Otherwise><ItemGroup><PackageReference Include="Haley.Abstractions" /></ItemGroup></Otherwise>
+  </Choose>
+  <Choose>
+    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyExtensions)\HaleyExtensions.csproj')">
+      <ItemGroup><ProjectReference Include="$(HaleyExtensions)\HaleyExtensions.csproj"><Name>HaleyExtensions</Name></ProjectReference></ItemGroup>
+    </When>
+    <Otherwise><ItemGroup><PackageReference Include="Haley.Extensions" /></ItemGroup></Otherwise>
+  </Choose>
+  <Choose>
+    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyHelpers)\HaleyHelpers.csproj')">
+      <ItemGroup><ProjectReference Include="$(HaleyHelpers)\HaleyHelpers.csproj"><Name>HaleyHelpers</Name></ProjectReference></ItemGroup>
+    </When>
+    <Otherwise><ItemGroup><PackageReference Include="Haley.Helpers" /></ItemGroup></Otherwise>
+  </Choose>
   <Target Name="CollectKidaContractAssemblies">
     <ItemGroup>
       <BuildOutputInPackage Include="$(MSBuildThisFileDirectory)..\Kida.Identity.Contracts\bin\$(Configuration)\$(TargetFramework)\Kida.Identity.Contracts.dll" />

@@ -427,6 +427,9 @@ FodyWeavers.xsd
 # Built Visual Studio Code Extensions
 *.vsix
 
+# Local deployment identity
+**/.deployinfo/
+
 # Windows Installer files from build outputs
 *.cab
 *.msi

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>kida-envelope</AssemblyName>
+    <RootNamespace>Kida.Tool</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>kida-envelope</ToolCommandName>
+    <PackageType>DotnetTool</PackageType>
+    <PackageId>Kida.Tool</PackageId>
+    <Version>$(KidaPackageVersion)</Version>
+    <Title>Kida Envelope Tool</Title>
+    <Description>Standalone fallback tool for preparing and inspecting Kida deployment requests.</Description>
+    <PackageReadmeFile>PACKAGE.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="PACKAGE.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyHelpers)\HaleyHelpers.csproj')">
+      <ItemGroup><ProjectReference Include="$(HaleyHelpers)\HaleyHelpers.csproj"><Name>HaleyHelpers</Name></ProjectReference></ItemGroup>
+    </When>
+    <Otherwise><ItemGroup><PackageReference Include="Haley.Helpers" /></ItemGroup></Otherwise>
+  </Choose>
+</Project>

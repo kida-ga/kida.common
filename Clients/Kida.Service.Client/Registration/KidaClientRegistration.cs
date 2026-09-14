@@ -44,6 +44,9 @@ public static class KidaClientRegistration
         services.TryAddSingleton<KidaClientTransport>();
         services.TryAddSingleton<IKidaClientTokenProvider, KidaClientTokenProvider>();
         services.TryAddSingleton<IKidaAccessPolicyCache, KidaAccessPolicyCache>();
+        services.TryAddSingleton<KidaScopeCatalogStatus>();
+        services.TryAddSingleton<IKidaScopeCatalogStatus>(static provider =>
+            provider.GetRequiredService<KidaScopeCatalogStatus>());
         services.TryAddTransient<IKidaClient, KidaClient>();
         services.TryAddTransient<IKidaAuthEdgeClient, KidaClient>();
         var scopeCatalogSection = configuration.GetSection(KidaScopeCatalogConfiguration.SectionName);

@@ -43,5 +43,6 @@ internal static class EnvelopeCli
         Console.WriteLine();
         Console.WriteLine("request creates a new .deployinfo identity when none exists.");
         Console.WriteLine("renew reuses the existing deployment ID and keypair.");
+        Console.WriteLine("request and renew also prepare .deployinfo/deploy.freemode.request for restricted override issuance.");
     }
 }

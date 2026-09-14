@@ -33,6 +33,7 @@ internal static class EnvelopeProcessor
         Console.WriteLine("DEPLOY   " + result.Request.DeployId);
         Console.WriteLine("EVIDENCE lite=" + result.Request.MachineEvidence.Lite.Count + " strong=" + result.Request.MachineEvidence.Strong.Count);
         Console.WriteLine("OUTPUT   " + result.RequestPath);
+        Console.WriteLine("OVERRIDE " + result.OverrideRequestPath);
         Console.WriteLine();
         Console.WriteLine("-----BEGIN KIDA DEPLOYMENT REQUEST-----");
         Console.WriteLine(result.Envelope);

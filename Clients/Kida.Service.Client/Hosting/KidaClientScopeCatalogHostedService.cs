@@ -12,11 +12,75 @@ internal sealed class KidaClientScopeCatalogHostedService(
     IOptions<KidaScopeCatalogOptions> options,
     IEnumerable<IKidaModuleCatalogProvider> providers,
     IKidaClient client,
-    ILogger<KidaClientScopeCatalogHostedService> logger) : IHostedService
+    KidaScopeCatalogStatus status,
+    ILogger<KidaClientScopeCatalogHostedService> logger) : IHostedService, IDisposable
 {
-    public async Task StartAsync(CancellationToken cancellationToken)
+    private readonly CancellationTokenSource _stopping = new();
+    private Task? _worker;
+
+    public Task StartAsync(CancellationToken cancellationToken)
     {
-        if (!options.Value.RegisterOnStartup) return;
+        if (!options.Value.RegisterOnStartup) return Task.CompletedTask;
+
+        _worker = RunAsync(_stopping.Token);
+        return Task.CompletedTask;
+    }
+
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        await _stopping.CancelAsync().ConfigureAwait(false);
+        if (_worker is null) return;
+
+        try
+        {
+            await _worker.WaitAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested || _stopping.IsCancellationRequested)
+        {
+        }
+    }
+
+    private async Task RunAsync(CancellationToken cancellationToken)
+    {
+        var retryDelay = TimeSpan.FromSeconds(5);
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            var attemptedUtc = DateTimeOffset.UtcNow;
+            status.MarkAttempt(attemptedUtc);
+            try
+            {
+                await RegisterAsync(cancellationToken).ConfigureAwait(false);
+                status.MarkAvailable(DateTimeOffset.UtcNow);
+                return;
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+            catch (Exception exception)
+            {
+                status.MarkUnavailable(attemptedUtc, exception);
+                logger.LogError(
+                    exception,
+                    "Kida catalog registration is unavailable. The host remains live and registration will be retried in {RetrySeconds} seconds.",
+                    retryDelay.TotalSeconds);
+            }
+
+            try
+            {
+                await Task.Delay(retryDelay, cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
+            retryDelay = TimeSpan.FromSeconds(Math.Min(retryDelay.TotalSeconds * 2, 60));
+        }
+    }
+
+    private async Task RegisterAsync(CancellationToken cancellationToken)
+    {
 
         var audiences = options.Value.GetAudiences();
         if (audiences.Count == 0)
@@ -82,5 +146,5 @@ internal sealed class KidaClientScopeCatalogHostedService(
         }
     }
 
-    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+    public void Dispose() => _stopping.Dispose();
 }

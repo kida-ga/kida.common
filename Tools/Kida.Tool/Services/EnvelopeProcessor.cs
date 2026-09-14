@@ -15,7 +15,8 @@ internal static class EnvelopeProcessor
             ProductVersion = context.Info.ProductVersion,
             Features = context.Info.Features,
             Limits = context.Info.Limits,
-            BaseDirectory = context.BaseDirectory
+            BaseDirectory = context.BaseDirectory,
+            DeploymentInfoLocation = context.DeploymentInfoLocation
         };
         var result = options.Command switch
         {

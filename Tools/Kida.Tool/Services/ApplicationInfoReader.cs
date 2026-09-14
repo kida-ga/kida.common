@@ -9,14 +9,22 @@ internal static class ApplicationInfoReader
     {
         var path = Path.GetFullPath(options.AppInfoPath);
         var info = DeploymentUtils.ReadApplicationInfo(path);
+        var baseDirectory = Path.GetFullPath(string.IsNullOrWhiteSpace(options.BaseDirectory)
+            ? Path.GetDirectoryName(path)!
+            : options.BaseDirectory);
+        var configuration = ResourceUtils.GenerateConfigurationRoot(
+            ["appsettings.json", Path.Combine("Config", "appsettings.json")],
+            baseDirectory);
+        var deploymentInfoLocation = configuration[DeploymentUtils.DeploymentInfoLocationConfigurationKey];
 
         return new ApplicationInfoContext
         {
             Info = info,
             AppInfoPath = path,
-            BaseDirectory = Path.GetFullPath(string.IsNullOrWhiteSpace(options.BaseDirectory)
-                ? Path.GetDirectoryName(path)!
-                : options.BaseDirectory)
+            BaseDirectory = baseDirectory,
+            DeploymentInfoLocation = string.IsNullOrWhiteSpace(deploymentInfoLocation)
+                ? null
+                : deploymentInfoLocation.Trim()
         };
     }
 }

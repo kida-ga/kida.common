@@ -63,7 +63,7 @@ kida-envelope show
 kida-envelope verify
 ```
 
-The command name is `kida-envelope` on both Windows and Linux.
+The command name is `kida-envelope` on both Windows and Linux. It honors the top-level `deployinfo-location` setting from the application's `appsettings.json` or `Config/appsettings.json`; a configured directory supersedes the default `<base>/.deployinfo` location.
 
 The command reads `appinfo.json` from the current directory by default. That file
 contains exactly `product`, `version`, `features`, and `limits`. A limit definition

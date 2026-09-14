@@ -7,4 +7,5 @@ internal sealed class ApplicationInfoContext
     internal required DeploymentApplicationInfo Info { get; init; }
     internal required string AppInfoPath { get; init; }
     internal required string BaseDirectory { get; init; }
+    internal string? DeploymentInfoLocation { get; init; }
 }

@@ -1,6 +1,7 @@
 namespace Kida.Models;
 
 public sealed record RegisterEntitlementCatalogRequest(
+    Guid DeploymentId,
     string ProductCode,
     string DisplayName,
     string? Description,

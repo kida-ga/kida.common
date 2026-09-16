@@ -58,4 +58,14 @@
       <ItemGroup><PackageReference Include="Haley.Rest" /></ItemGroup>
     </Otherwise>
   </Choose>
+  <Choose>
+    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyHelpers)\HaleyHelpers.csproj')">
+      <ItemGroup>
+        <ProjectReference Include="$(HaleyHelpers)\HaleyHelpers.csproj"><Name>HaleyHelpers</Name></ProjectReference>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup><PackageReference Include="Haley.Helpers" /></ItemGroup>
+    </Otherwise>
+  </Choose>
 </Project>

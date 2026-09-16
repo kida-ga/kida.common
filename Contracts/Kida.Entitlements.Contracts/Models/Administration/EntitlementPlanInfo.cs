@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace Kida.Models;
 
 public sealed record EntitlementPlanInfo(
@@ -6,4 +8,5 @@ public sealed record EntitlementPlanInfo(
     string Code,
     string DisplayName,
     string? BillingPeriod,
-    string Status);
+    string Status,
+    IReadOnlyDictionary<string, JsonElement> Features);

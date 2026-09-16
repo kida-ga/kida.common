@@ -13,6 +13,12 @@ public sealed class KidaLicenseOptions
     public int ExpiringDays { get; set; } = 30;
     public int RecoveryDays { get; set; } = 7;
 
+    /// <summary>
+    /// Whether a host should visibly announce a deliberate code-level glass break. This setting cannot enable
+    /// glass break; it only controls presentation after the host has explicitly broken the glass in code.
+    /// </summary>
+    public bool WarnGlassBreak { get; set; } = true;
+
     /// <summary>Application base directory. Empty uses the host content root.</summary>
     public string? BaseDirectory { get; set; }
 

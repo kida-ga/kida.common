@@ -9,7 +9,7 @@ management implementation, or deployment configuration.
 
 | Folder | Package | Purpose |
 | --- | --- | --- |
-| `Contracts` | `Kida.Contracts` | Public Identity, Access, and Tenancy DTOs, constants, interfaces, and the client-side Access evaluator |
+| `Contracts` | `Kida.Contracts` | Public Identity, Access, Tenancy, Entitlements, and Apps DTOs, constants, interfaces, and the client-side Access evaluator |
 | `Clients` | `Kida.Service.Client` | Haley-based server-to-Kida client for trusted product hosts |
 | `ResourceServer` | `Kida.ResourceServer` | Local validation of Kida-signed tokens and authorization data |
 | `AuthEdge` | `Kida.AuthEdge` | Narrow authentication endpoints embedded into a product host |
@@ -23,6 +23,37 @@ The source contract projects under `Contracts` are bundled into the single
 Third-party vendors normally do not need these libraries. They call the public API
 of the product they integrate with. Client credentials must remain in a trusted
 server process and must never be shipped to a browser or public application.
+
+## Product entitlement catalog
+
+A trusted Product Host publishes the feature and limit vocabulary already present
+in its `appinfo.json`; it does not maintain a second entitlement catalog:
+
+```csharp
+services.AddKidaClient(configuration);
+services.AddKidaProductCatalog(configuration, options =>
+{
+    options.DisplayName = "Product display name";
+    options.Description = "Product-host commercial catalog.";
+});
+```
+
+The registration reads the stable deployment identity through Haley, publishes
+`audience + product + semantic version`, and retains the returned immutable release
+UUID through `IKidaProductCatalogStatus`. Ordinary feature entries become boolean
+features. Typed `appinfo.json` limits become integer, decimal, text, boolean, or JSON
+features so plans can carry their values without Kida interpreting their business
+meaning.
+
+The Product Host client needs `entitlements.catalog.register`. A host that exposes
+its own superadmin plan/subscription UI additionally needs
+`entitlements.plans.manage` and `entitlements.subscriptions.manage`. Evaluation uses
+`entitlements.evaluate` and submits the exact release UUID from catalog status.
+
+Kida stores one stable product per `(audience, product code)`. Re-publishing the
+same version and content is idempotent; changed content under the same version is
+rejected. Plans are product-level, tenant access is subscription-to-plan only, and
+new release features never enter an existing plan automatically.
 
 ## Build
 
@@ -55,13 +86,15 @@ reimplements the evaluation:
 ```csharp
 services.AddKidaLicensing(
     configuration,
-    new KidaLicenseProduct("plaintrack", PlainTrackLicensedFeatures.All, [PlainTrackLicenseLimits.TenantMaximum]),
-    "PlainTrack:Licensing");
+    new KidaLicenseProduct("plaintrack", PlainTrackLicensedFeatures.All, [PlainTrackLicenseLimits.TenantMaximum]));
 ```
 
 The product supplies only its identity: `appinfo.json` in the content root (product,
-version, features, limits), the same catalogs compiled into the host, and a configuration
-section with `Path`, `PublicKeyPath`, `TrialDays`, `ExpiringDays` and `RecoveryDays`.
+version, features, limits) and the same catalogs compiled into the host. Kida owns the
+common path, trusted-key, trial, expiry-warning and evidence-recovery defaults. An optional
+`Kida:Licensing` section exists for exceptional deployment overrides; normal products do
+not repeat it. Trial overrides are capped at 90 days. Grant grace is capped at 45 days by
+both Kida.Sanction and runtime evaluation.
 Haley's `LicenseRuntime` prepares the deployment request, evaluates `license.lic` and
 `features.fea`, and keeps a `LicenseSnapshot` in memory; startup fails when the grant is
 unusable. `IKidaLicenseService` answers `HasFeature`, `TryGetLimit` and `GetStatus` from
@@ -81,14 +114,14 @@ Licensing can be switched off for one deployment, in code only:
 
 ```csharp
 var flags = new AppFlags().BreakGlass("Issuer unreachable during migration");
-services.AddKidaLicensing(configuration, product, "Product:Licensing", flags);
+services.AddKidaLicensing(configuration, product, flags);
 ```
 
 `AppFlags.GlassBreak` has no public setter, so it can never arrive from `appsettings`, an environment variable or a
 configuration binder. With the glass broken no licence file is read, every compiled feature is available, limits are
 not enforced, and the request, replace and reload operations are refused with `license.glass_break`. The host logs it
-as critical once at startup with the stated reason. Products decide what to show: PlainTrack, for example, announces
-it by default and can hide the licensing area entirely for a deployment that carries no licence by contract.
+as critical once at startup with the stated reason. Kida's common `WarnGlassBreak` policy defaults to visible;
+products decide how that status is presented.
 
 `endpoint.RequireLicensedFeatures("feature")` refuses unlicensed calls with a 403 problem
 (`code = license.feature_unavailable`). `MapKidaLicenseEndpoints` maps status, request,

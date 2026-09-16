@@ -6,5 +6,5 @@ public sealed record EntitlementProductInfo(
     string DisplayName,
     string? Description,
     string Status,
-    IReadOnlyCollection<string> Audiences,
+    string Audience,
     long Revision);

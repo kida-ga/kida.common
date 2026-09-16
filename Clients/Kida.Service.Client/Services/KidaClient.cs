@@ -513,6 +513,18 @@ internal sealed class KidaClient(
     public async ValueTask<EntitlementCatalogReceipt> RegisterEntitlementCatalogAsync(RegisterEntitlementCatalogRequest request, CancellationToken cancellationToken = default) =>
         await SendWithClientTokenAsync<EntitlementCatalogReceipt>(() => CreateJsonRequest("kida/entitlements/catalog", request, cancellationToken), Method.POST, KidaEntitlementsScopes.CatalogRegister, cancellationToken).ConfigureAwait(false);
 
+    public async ValueTask<EntitlementProductCatalog> GetEntitlementProductAsync(string productCode, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<EntitlementProductCatalog>(
+            () => CreateRequest($"kida/entitlements/products/{Uri.EscapeDataString(productCode)}", cancellationToken)
+                .WithQuery(new QueryParam("audience", _options.UserAudience)),
+            Method.GET, KidaEntitlementsScopes.PlansManage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<EntitlementPlanInfo> CreateEntitlementPlanAsync(CreateEntitlementPlanRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<EntitlementPlanInfo>(() => CreateJsonRequest("kida/entitlements/plans", request, cancellationToken), Method.POST, KidaEntitlementsScopes.PlansManage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<EntitlementSubscriptionInfo> CreateEntitlementSubscriptionAsync(CreateSubscriptionRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<EntitlementSubscriptionInfo>(() => CreateJsonRequest("kida/entitlements/subscriptions", request, cancellationToken), Method.POST, KidaEntitlementsScopes.SubscriptionsManage, cancellationToken).ConfigureAwait(false);
+
     public async ValueTask<EntitlementDecision> EvaluateEntitlementAsync(EvaluateEntitlementRequest request, CancellationToken cancellationToken = default) =>
         await SendWithClientTokenAsync<EntitlementDecision>(() => CreateJsonRequest("kida/entitlements/evaluate", request, cancellationToken), Method.POST, KidaEntitlementsScopes.Evaluate, cancellationToken).ConfigureAwait(false);
 

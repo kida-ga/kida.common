@@ -8,12 +8,35 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace Kida.Licensing.Tests;
 
 public sealed class KidaLicensingTests
 {
     private static readonly KidaLicenseProduct Product = new(LicenseWorkspace.Product, LicenseWorkspace.Features, LicenseWorkspace.Limits);
+
+    [Fact]
+    public void DefaultRegistrationUsesKidaOwnedDefaultsAndOverrides()
+    {
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
+        {
+            ["Kida:Licensing:TrialDays"] = "180",
+            ["Kida:Licensing:WarnGlassBreak"] = "false"
+        }).Build();
+
+        using var services = new ServiceCollection().AddLogging()
+            .AddKidaLicensing(configuration, Product)
+            .BuildServiceProvider();
+
+        var options = services.GetRequiredService<IOptions<KidaLicenseOptions>>().Value;
+        Assert.Null(options.Path);
+        Assert.Null(options.PublicKeyPath);
+        Assert.Equal(LicensePolicyLimits.MaximumTrialDays, options.TrialDays);
+        Assert.Equal(30, options.ExpiringDays);
+        Assert.Equal(7, options.RecoveryDays);
+        Assert.False(options.WarnGlassBreak);
+    }
 
     [Fact]
     public void OneRegistrationLoadsTheLicenseFromTheContentRootAndConfiguration()

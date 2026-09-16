@@ -65,6 +65,37 @@ public static class KidaClientRegistration
         return services;
     }
 
+    public static IServiceCollection AddKidaProductCatalog(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        string sectionName = KidaProductCatalogOptions.DefaultSectionName,
+        Action<KidaProductCatalogOptions>? configure = null)
+    {
+        if (!services.Any(descriptor => descriptor.ServiceType == typeof(IKidaClient)))
+        {
+            throw new InvalidOperationException("Call AddKidaClient before AddKidaProductCatalog.");
+        }
+
+        var options = services.AddOptions<KidaProductCatalogOptions>()
+            .Bind(configuration.GetSection(sectionName));
+        if (configure is not null) options.Configure(configure);
+        options.PostConfigure(value =>
+        {
+            if (string.IsNullOrWhiteSpace(value.DeploymentInfoLocation))
+            {
+                value.DeploymentInfoLocation = configuration[DeploymentUtils.DeploymentInfoLocationConfigurationKey];
+            }
+        });
+        options.Validate(static value => !value.RegisterOnStartup || !string.IsNullOrWhiteSpace(value.ApplicationInfoPath), "Kida product catalog ApplicationInfoPath is required.")
+            .ValidateOnStart();
+
+        services.TryAddSingleton<IKidaProductCatalogProvider, ApplicationInfoProductCatalogProvider>();
+        services.TryAddSingleton<KidaProductCatalogStatus>();
+        services.TryAddSingleton<IKidaProductCatalogStatus>(static provider => provider.GetRequiredService<KidaProductCatalogStatus>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, KidaProductCatalogHostedService>());
+        return services;
+    }
+
     public static IServiceCollection AddKidaIntegrationClientManagement(
         this IServiceCollection services,
         IConfiguration configuration,

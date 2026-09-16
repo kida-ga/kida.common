@@ -31,6 +31,39 @@ public sealed class LicenseRuntimeTests
     }
 
     [Fact]
+    public void TrialConfigurationAboveThePlatformCeilingIsCapped()
+    {
+        using var workspace = new LicenseWorkspace();
+        var options = workspace.Options();
+        options.TrialDays = 500;
+        var loaded = LicenseRuntime.Load(options);
+        Assert.True(loaded.Status, loaded.Message);
+        using var runtime = loaded.Result!;
+
+        Assert.Equal(LicensePolicyLimits.MaximumTrialDays, runtime.GetStatus().DaysRemaining);
+        workspace.Clock.Now = workspace.Clock.Now.AddDays(LicensePolicyLimits.MaximumTrialDays + 1);
+        Assert.Equal(LicenseState.TrialExpired, runtime.GetStatus().State);
+    }
+
+    [Fact]
+    public void GrantGraceAboveThePlatformCeilingIsCapped()
+    {
+        using var workspace = new LicenseWorkspace();
+        var issued = new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        workspace.InstallLicense(workspace.LegacyLicense(issued, validityDays: 1, graceDays: 500));
+        workspace.Clock.Now = issued.AddDays(2);
+        using var runtime = workspace.Load();
+
+        var grace = runtime.GetStatus();
+        Assert.Equal(LicenseState.Grace, grace.State);
+        Assert.Equal(LicensePolicyLimits.MaximumGraceDays, grace.GraceDays);
+        Assert.Equal(issued.AddDays(1 + LicensePolicyLimits.MaximumGraceDays), grace.GraceEnds);
+
+        workspace.Clock.Now = issued.AddDays(2 + LicensePolicyLimits.MaximumGraceDays);
+        Assert.Equal(LicenseState.Expired, runtime.GetStatus().State);
+    }
+
+    [Fact]
     public void AHostWillNotStartOnceTheTrialHasEndedAndNoGrantIsInstalled()
     {
         using var workspace = new LicenseWorkspace();

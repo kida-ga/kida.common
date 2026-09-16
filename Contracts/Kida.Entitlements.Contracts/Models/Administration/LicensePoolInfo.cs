@@ -9,4 +9,5 @@ public sealed record LicensePoolInfo(
     int Quantity,
     string Status,
     int Assigned,
-    int Leased);
+    int Leased,
+    string? DisplayName = null);

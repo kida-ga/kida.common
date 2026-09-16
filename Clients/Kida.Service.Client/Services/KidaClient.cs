@@ -519,6 +519,12 @@ internal sealed class KidaClient(
                 .WithQuery(new QueryParam("audience", _options.UserAudience)),
             Method.GET, KidaEntitlementsScopes.PlansManage, cancellationToken).ConfigureAwait(false);
 
+    public async ValueTask<IReadOnlyCollection<EntitlementSubscriptionInfo>> GetTenantEntitlementSubscriptionsAsync(Guid tenantId, string productCode, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<IReadOnlyCollection<EntitlementSubscriptionInfo>>(
+            () => CreateRequest($"kida/entitlements/products/{Uri.EscapeDataString(productCode)}/tenants/{tenantId:D}/subscriptions", cancellationToken)
+                .WithQuery(new QueryParam("audience", _options.UserAudience)),
+            Method.GET, KidaEntitlementsScopes.SubscriptionsManage, cancellationToken).ConfigureAwait(false);
+
     public async ValueTask<EntitlementPlanInfo> CreateEntitlementPlanAsync(CreateEntitlementPlanRequest request, CancellationToken cancellationToken = default) =>
         await SendWithClientTokenAsync<EntitlementPlanInfo>(() => CreateJsonRequest("kida/entitlements/plans", request, cancellationToken), Method.POST, KidaEntitlementsScopes.PlansManage, cancellationToken).ConfigureAwait(false);
 

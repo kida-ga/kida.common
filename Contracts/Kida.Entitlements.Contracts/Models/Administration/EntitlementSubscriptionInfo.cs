@@ -8,4 +8,5 @@ public sealed record EntitlementSubscriptionInfo(
     string Status,
     DateTimeOffset StartsAt,
     DateTimeOffset? TrialEndsAt,
-    DateTimeOffset? EndsAt);
+    DateTimeOffset? EndsAt,
+    string? BillingReference = null);

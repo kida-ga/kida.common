@@ -14,6 +14,8 @@ management implementation, or deployment configuration.
 | `ResourceServer` | `Kida.ResourceServer` | Local validation of Kida-signed tokens and authorization data |
 | `AuthEdge` | `Kida.AuthEdge` | Narrow authentication endpoints embedded into a product host |
 | `Tools` | `Kida.Tool` | Safe `kida-envelope` command for preparing deployment requests without starting a host |
+| `Licensing` | `Kida.Licensing` | Deployment license validation for product hosts: one registration, feature and limit checks, license administration endpoints |
+| `Tests` | — | `Kida.Licensing.Tests`, run with signed test grants in temporary directories |
 
 The source contract projects under `Contracts` are bundled into the single
 `Kida.Contracts` NuGet package. They are not published as separate packages.
@@ -40,12 +42,72 @@ dotnet restore Kida.Common_Ref.sln
 dotnet build Kida.Common_Ref.sln --no-restore
 ```
 
+`Kida.Licensing` and its tests are in `Kida.Common_Ref.sln` only for now. They use Haley's
+Licensing utils (`LicenseRuntime`, `LicenseSnapshot`, `LicenseStatus`), which are not yet in
+the published `Haley.Helpers` package; add both projects to `Kida.Common.sln` once that
+Haley version is released.
+
+## Product licensing
+
+A product host validates its deployment license with one registration and never
+reimplements the evaluation:
+
+```csharp
+services.AddKidaLicensing(
+    configuration,
+    new KidaLicenseProduct("plaintrack", PlainTrackLicensedFeatures.All, [PlainTrackLicenseLimits.TenantMaximum]),
+    "PlainTrack:Licensing");
+```
+
+The product supplies only its identity: `appinfo.json` in the content root (product,
+version, features, limits), the same catalogs compiled into the host, and a configuration
+section with `Path`, `PublicKeyPath`, `TrialDays`, `ExpiringDays` and `RecoveryDays`.
+Haley's `LicenseRuntime` prepares the deployment request, evaluates `license.lic` and
+`features.fea`, and keeps a `LicenseSnapshot` in memory; startup fails when the grant is
+unusable. `IKidaLicenseService` answers `HasFeature`, `TryGetLimit` and `GetStatus` from
+that snapshot against the current time, so valid, expiring, grace and expiry follow the
+clock without rereading files:
+
+- trial grants every compiled feature until it ends;
+- trial, valid, expiring, grace and active recovery allow term features;
+- perpetual features remain after the term ends, unless the license is tampered, invalid,
+  or bound to another deployment or machine;
+- limits from `features.fea` remain after the term; limits carried by the license or the
+  trial apply only during the term.
+
+### Glass break
+
+Licensing can be switched off for one deployment, in code only:
+
+```csharp
+var flags = new AppFlags().BreakGlass("Issuer unreachable during migration");
+services.AddKidaLicensing(configuration, product, "Product:Licensing", flags);
+```
+
+`AppFlags.GlassBreak` has no public setter, so it can never arrive from `appsettings`, an environment variable or a
+configuration binder. With the glass broken no licence file is read, every compiled feature is available, limits are
+not enforced, and the request, replace and reload operations are refused with `license.glass_break`. The host logs it
+as critical once at startup with the stated reason. Products decide what to show: PlainTrack, for example, announces
+it by default and can hide the licensing area entirely for a deployment that carries no licence by contract.
+
+`endpoint.RequireLicensedFeatures("feature")` refuses unlicensed calls with a 403 problem
+(`code = license.feature_unavailable`). `MapKidaLicenseEndpoints` maps status, request,
+replace and reload onto a route group the host has already secured, optionally projecting
+the status into the product's own response contract.
+
 ## Deployment request lifecycle and fallback tool
 
 Product startup should call Haley's `DeploymentUtils.EnsureRequest` using its validated
 `appinfo.json`, before evaluating the grant. This automatically creates missing
 deployment state and renews a stale request while retaining the deployment ID and
 keypair. It does not silently replace corrupt, incomplete, or mismatched state.
+
+Issuance produces two deployment-bound artifacts: a featureless `license.lic` owns the
+commercial term, while the canonical `features.fea` owns term features, perpetual
+features, an optional perpetual major-version cap, and typed limits. Products use
+Haley's evaluation result to enforce the effective intersection. Feature updates may
+reuse the signed binding inside a current license and do not require a new deployment
+request.
 
 Kida.Tool is the standalone operator fallback when the host cannot start, provisioning
 must happen before startup, or a request must be inspected manually. It is not referenced

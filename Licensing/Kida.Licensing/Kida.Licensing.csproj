@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(SolutionDir)ProjectReferences_$(SolutionName).txt" Condition="Exists('$(SolutionDir)ProjectReferences_$(SolutionName).txt')" />
+  <PropertyGroup>
+    <AssemblyName>Kida.Licensing</AssemblyName>
+    <RootNamespace>Kida.Licensing</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <PackageId>Kida.Licensing</PackageId>
+    <Version>$(KidaPackageVersion)</Version>
+    <Description>Kida deployment license validation for trusted ASP.NET Core product hosts: one registration, feature checks, limits and license administration endpoints.</Description>
+    <PackageReadmeFile>PACKAGE.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <None Include="PACKAGE.md" Pack="true" PackagePath="\" />
+    <InternalsVisibleTo Include="Kida.Licensing.Tests" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyHelpers)\HaleyHelpers.csproj')">
+      <ItemGroup><ProjectReference Include="$(HaleyHelpers)\HaleyHelpers.csproj"><Name>HaleyHelpers</Name></ProjectReference></ItemGroup>
+    </When>
+    <Otherwise><ItemGroup><PackageReference Include="Haley.Helpers" /></ItemGroup></Otherwise>
+  </Choose>
+  <Choose>
+    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyHelpersWeb)\HaleyHelpersWeb.csproj')">
+      <ItemGroup><ProjectReference Include="$(HaleyHelpersWeb)\HaleyHelpersWeb.csproj"><Name>HaleyHelpersWeb</Name></ProjectReference></ItemGroup>
+    </When>
+    <Otherwise><ItemGroup><PackageReference Include="Haley.Helpers.Web" /></ItemGroup></Otherwise>
+  </Choose>
+</Project>

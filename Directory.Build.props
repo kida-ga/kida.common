@@ -1,5 +1,9 @@
 <Project>
   <PropertyGroup>
+    <KidaUseHaleyPackageReferences Condition="'$(KidaUseHaleyPackageReferences)' == '' and $([System.String]::Copy('$(SolutionName)').EndsWith('_Ref'))">false</KidaUseHaleyPackageReferences>
+    <KidaUseHaleyPackageReferences Condition="'$(KidaUseHaleyPackageReferences)' == ''">true</KidaUseHaleyPackageReferences>
+  </PropertyGroup>
+  <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -20,12 +24,16 @@
     <KidaAppsContractsProj Condition="'$(KidaAppsContractsProj)' == ''">$(MSBuildThisFileDirectory)Contracts\Kida.Apps.Contracts\Kida.Apps.Contracts.csproj</KidaAppsContractsProj>
     <KidaServiceClientProj Condition="'$(KidaServiceClientProj)' == ''">$(MSBuildThisFileDirectory)Clients\Kida.Service.Client\Kida.Service.Client.csproj</KidaServiceClientProj>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(KidaUseHaleyPackageReferences)' != 'true'">
-    <HaleyProject Condition="'$(HaleyProject)' == '' and Exists('$(MSBuildThisFileDirectory)..\..\HaleyProject')">$(MSBuildThisFileDirectory)..\..\HaleyProject</HaleyProject>
-    <HaleyAbstractions Condition="'$(HaleyAbstractions)' == '' and '$(HaleyProject)' != ''">$(HaleyProject)\HaleyAbstractions\HaleyAbstractions</HaleyAbstractions>
-    <HaleyExtensions Condition="'$(HaleyExtensions)' == '' and '$(HaleyProject)' != ''">$(HaleyProject)\HaleyExtensions\HaleyExtensions</HaleyExtensions>
-    <HaleyHelpers Condition="'$(HaleyHelpers)' == '' and '$(HaleyProject)' != ''">$(HaleyProject)\HaleyHelpers\HaleyHelpers</HaleyHelpers>
-    <HaleyHelpersWeb Condition="'$(HaleyHelpersWeb)' == '' and '$(HaleyProject)' != ''">$(HaleyProject)\HaleyHelpers.Web\HaleyHelpersWeb</HaleyHelpersWeb>
-    <HaleyRest Condition="'$(HaleyRest)' == '' and '$(HaleyProject)' != ''">$(HaleyProject)\HaleyRest\HaleyRest</HaleyRest>
-  </PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory)ProjectReferences_Kida.Common_Ref.txt"
+          Condition="'$(KidaUseHaleyPackageReferences)' == 'false'" />
+  <Target Name="ValidateKidaHaleyReferences" BeforeTargets="CollectPackageReferences;PrepareForBuild">
+    <Error Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and '$(KidaUseHaleyPackageReferences)' != 'false'"
+           Text="KidaUseHaleyPackageReferences must be true (packages) or false (source)." />
+    <ItemGroup Condition="'$(KidaUseHaleyPackageReferences)' == 'false'">
+      <_KidaHaleySourceReference Include="@(ProjectReference)"
+                                 Condition="$([System.String]::Copy('%(ProjectReference.Filename)').StartsWith('Haley'))" />
+    </ItemGroup>
+    <Error Condition="'%(_KidaHaleySourceReference.Identity)' != '' and !Exists('%(_KidaHaleySourceReference.Identity)')"
+           Text="Haley source mode requires '%(_KidaHaleySourceReference.FullPath)'. Restore the source checkout or correct HaleyProject. Use package mode explicitly to consume NuGet packages." />
+  </Target>
 </Project>

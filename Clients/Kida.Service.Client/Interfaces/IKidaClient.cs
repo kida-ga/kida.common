@@ -6,6 +6,8 @@ namespace Kida.Service.Client;
 public interface IKidaClient
 {
     ValueTask<AuthenticationResult> AuthenticateAsync(AuthenticateRequest request, CancellationToken cancellationToken = default);
+    ValueTask<PasswordlessAuthenticationInitiationResult> BeginPasswordlessAuthenticationAsync(BeginPasswordlessAuthenticationRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<PasswordlessAuthenticationInitiationResult>(new NotSupportedException());
+    ValueTask<PasswordlessAuthenticationResult> CompletePasswordlessAuthenticationAsync(CompletePasswordlessAuthenticationRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<PasswordlessAuthenticationResult>(new NotSupportedException());
     ValueTask<AuthenticationResult> RefreshSessionAsync(string refreshToken, CancellationToken cancellationToken = default);
     ValueTask RevokeSessionAsync(Guid sessionId, CancellationToken cancellationToken = default);
     ValueTask<ProvisionedUser> ProvisionUserAsync(ProvisionLocalUserRequest request, CancellationToken cancellationToken = default);
@@ -64,6 +66,7 @@ public interface IKidaClient
     ValueTask<EntitlementCatalogReceipt> RegisterEntitlementCatalogAsync(RegisterEntitlementCatalogRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<EntitlementCatalogReceipt>(new NotSupportedException());
     ValueTask<EntitlementProductCatalog> GetEntitlementProductAsync(string productCode, CancellationToken cancellationToken = default) => ValueTask.FromException<EntitlementProductCatalog>(new NotSupportedException());
     ValueTask<IReadOnlyCollection<EntitlementSubscriptionInfo>> GetTenantEntitlementSubscriptionsAsync(Guid tenantId, string productCode, CancellationToken cancellationToken = default) => ValueTask.FromException<IReadOnlyCollection<EntitlementSubscriptionInfo>>(new NotSupportedException());
+    ValueTask<EntitlementSubscriptionPage> GetTenantEntitlementSubscriptionHistoryAsync(Guid tenantId, string productCode, int page = 1, int pageSize = 20, CancellationToken cancellationToken = default) => ValueTask.FromException<EntitlementSubscriptionPage>(new NotSupportedException());
     ValueTask<EntitlementPlanInfo> CreateEntitlementPlanAsync(CreateEntitlementPlanRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<EntitlementPlanInfo>(new NotSupportedException());
     ValueTask<EntitlementSubscriptionInfo> CreateEntitlementSubscriptionAsync(CreateSubscriptionRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<EntitlementSubscriptionInfo>(new NotSupportedException());
     ValueTask<EntitlementDecision> EvaluateEntitlementAsync(EvaluateEntitlementRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<EntitlementDecision>(new NotSupportedException());

@@ -134,6 +134,48 @@ internal sealed class KidaClient(
             cancellationToken).ConfigureAwait(false);
     }
 
+    public async ValueTask<PasswordlessAuthenticationInitiationResult> BeginPasswordlessAuthenticationAsync(
+        BeginPasswordlessAuthenticationRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var boundRequest = request with
+        {
+            ClientId = _options.ClientId,
+            Resource = _options.UserAudience
+        };
+        return await SendWithClientTokenAsync<PasswordlessAuthenticationInitiationResult>(
+            () => AddIdentityHeaders(
+                CreateJsonRequest(
+                    "kida/identity/passwordless/challenges",
+                    boundRequest,
+                    cancellationToken),
+                username: boundRequest.Email),
+            Method.POST,
+            KidaIdentityScopes.Authenticate,
+            cancellationToken).ConfigureAwait(false);
+    }
+
+    public async ValueTask<PasswordlessAuthenticationResult> CompletePasswordlessAuthenticationAsync(
+        CompletePasswordlessAuthenticationRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var boundRequest = request with
+        {
+            ClientId = _options.ClientId,
+            Resource = _options.UserAudience
+        };
+        return await SendWithClientTokenAsync<PasswordlessAuthenticationResult>(
+            () => AddIdentityHeaders(
+                    CreateJsonRequest(
+                        "kida/identity/passwordless/challenges/complete",
+                        boundRequest,
+                        cancellationToken))
+                .AddHeader(KidaIdentityHeaders.Challenge, boundRequest.ChallengeId.ToString("D")),
+            Method.POST,
+            KidaIdentityScopes.Authenticate,
+            cancellationToken).ConfigureAwait(false);
+    }
+
     public async ValueTask ReleaseUserLoginProtectionAsync(
         Guid userId,
         CancellationToken cancellationToken = default)
@@ -523,6 +565,19 @@ internal sealed class KidaClient(
         await SendWithClientTokenAsync<IReadOnlyCollection<EntitlementSubscriptionInfo>>(
             () => CreateRequest($"kida/entitlements/products/{Uri.EscapeDataString(productCode)}/tenants/{tenantId:D}/subscriptions", cancellationToken)
                 .WithQuery(new QueryParam("audience", _options.UserAudience)),
+            Method.GET, KidaEntitlementsScopes.SubscriptionsManage, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<EntitlementSubscriptionPage> GetTenantEntitlementSubscriptionHistoryAsync(
+        Guid tenantId,
+        string productCode,
+        int page = 1,
+        int pageSize = 20,
+        CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<EntitlementSubscriptionPage>(
+            () => CreateRequest($"kida/entitlements/products/{Uri.EscapeDataString(productCode)}/tenants/{tenantId:D}/subscriptions/history", cancellationToken)
+                .WithQuery(new QueryParam("audience", _options.UserAudience))
+                .WithQuery(new QueryParam("page", Math.Clamp(page, 1, 1_000_000).ToString(System.Globalization.CultureInfo.InvariantCulture)))
+                .WithQuery(new QueryParam("pageSize", Math.Clamp(pageSize, 1, 100).ToString(System.Globalization.CultureInfo.InvariantCulture))),
             Method.GET, KidaEntitlementsScopes.SubscriptionsManage, cancellationToken).ConfigureAwait(false);
 
     public async ValueTask<EntitlementPlanInfo> CreateEntitlementPlanAsync(CreateEntitlementPlanRequest request, CancellationToken cancellationToken = default) =>

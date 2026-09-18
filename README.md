@@ -73,10 +73,22 @@ dotnet restore Kida.Common_Ref.sln
 dotnet build Kida.Common_Ref.sln --no-restore
 ```
 
-`Kida.Licensing` and its tests are in `Kida.Common_Ref.sln` only for now. They use Haley's
-Licensing utils (`LicenseRuntime`, `LicenseSnapshot`, `LicenseStatus`), which are not yet in
-the published `Haley.Helpers` package; add both projects to `Kida.Common.sln` once that
-Haley version is released.
+Both solutions include `Kida.Licensing` and its tests. The normal solution always
+uses centrally pinned Haley packages, even when a Haley checkout is present.
+The `_Ref` solution selects Haley source explicitly and fails if a required source
+project is missing.
+
+Direct project builds default to package mode. Pass
+`-p:KidaUseHaleyPackageReferences=false` to select source mode explicitly, and
+override `HaleyProject` when the source checkout is outside the usual sibling layout.
+The separate `KidaUsePackageReferences` switch still controls Kida's own public
+package references for release packaging.
+
+Package mode currently requires a compatible Haley package release: the pinned
+`Haley.Helpers` 2.4.14 package lacks deployment APIs used by current Kida code,
+including `DeploymentUtils.EnsureRequest` and typed deployment limits. Use `_Ref`
+for current source development until compatible packages are approved and pinned.
+Package builds do not substitute local source to conceal this release dependency.
 
 ## Product licensing
 

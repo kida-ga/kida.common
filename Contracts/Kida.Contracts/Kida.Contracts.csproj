@@ -19,19 +19,19 @@
     <None Include="PACKAGE.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <Choose>
-    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyAbstractions)\HaleyAbstractions.csproj')">
+    <When Condition="'$(KidaUseHaleyPackageReferences)' == 'false'">
       <ItemGroup><ProjectReference Include="$(HaleyAbstractions)\HaleyAbstractions.csproj"><Name>HaleyAbstractions</Name></ProjectReference></ItemGroup>
     </When>
     <Otherwise><ItemGroup><PackageReference Include="Haley.Abstractions" /></ItemGroup></Otherwise>
   </Choose>
   <Choose>
-    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyExtensions)\HaleyExtensions.csproj')">
+    <When Condition="'$(KidaUseHaleyPackageReferences)' == 'false'">
       <ItemGroup><ProjectReference Include="$(HaleyExtensions)\HaleyExtensions.csproj"><Name>HaleyExtensions</Name></ProjectReference></ItemGroup>
     </When>
     <Otherwise><ItemGroup><PackageReference Include="Haley.Extensions" /></ItemGroup></Otherwise>
   </Choose>
   <Choose>
-    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyHelpers)\HaleyHelpers.csproj')">
+    <When Condition="'$(KidaUseHaleyPackageReferences)' == 'false'">
       <ItemGroup><ProjectReference Include="$(HaleyHelpers)\HaleyHelpers.csproj"><Name>HaleyHelpers</Name></ProjectReference></ItemGroup>
     </When>
     <Otherwise><ItemGroup><PackageReference Include="Haley.Helpers" /></ItemGroup></Otherwise>

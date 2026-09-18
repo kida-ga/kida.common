@@ -8,6 +8,16 @@ namespace Kida.Service.Client;
 /// </summary>
 public interface IKidaAuthEdgeClient
 {
+    ValueTask<PasswordlessAuthenticationInitiationResult> BeginPasswordlessAuthenticationAsync(
+        BeginPasswordlessAuthenticationRequest request,
+        CancellationToken cancellationToken = default) =>
+        ValueTask.FromException<PasswordlessAuthenticationInitiationResult>(new NotSupportedException());
+
+    ValueTask<PasswordlessAuthenticationResult> CompletePasswordlessAuthenticationAsync(
+        CompletePasswordlessAuthenticationRequest request,
+        CancellationToken cancellationToken = default) =>
+        ValueTask.FromException<PasswordlessAuthenticationResult>(new NotSupportedException());
+
     ValueTask<ClientTokenResult> IssueProductClientTokenAsync(
         string clientIdentifier,
         string clientSecret,

@@ -13,6 +13,8 @@ public interface IEntitlementAdministrationService
     ValueTask<IFeedback> DeletePlanAsync(Guid planId, CancellationToken cancellationToken = default);
     ValueTask<IFeedback<EntitlementSubscriptionInfo>> CreateSubscriptionAsync(CreateSubscriptionRequest request, CancellationToken cancellationToken = default);
     ValueTask<IReadOnlyCollection<EntitlementSubscriptionInfo>> GetTenantSubscriptionsAsync(Guid tenantId, string audience, string productCode, CancellationToken cancellationToken = default);
+    ValueTask<EntitlementSubscriptionPage> GetProductSubscriptionHistoryAsync(Guid tenantId, string audience, string productCode, int page = 1, int pageSize = 20, CancellationToken cancellationToken = default);
+    ValueTask<EntitlementSubscriptionPage> GetTenantSubscriptionHistoryAsync(Guid tenantId, Guid? productId = null, int page = 1, int pageSize = 20, CancellationToken cancellationToken = default);
     ValueTask<IFeedback> DeleteSubscriptionAsync(Guid tenantId, Guid subscriptionId, CancellationToken cancellationToken = default);
     ValueTask<IFeedback<LicensePoolInfo>> CreateLicensePoolAsync(CreateLicensePoolRequest request, CancellationToken cancellationToken = default);
     ValueTask<IFeedback<LicensePoolInfo>> UpdateLicensePoolAsync(Guid tenantId, Guid poolId, UpdateLicensePoolRequest request, CancellationToken cancellationToken = default);

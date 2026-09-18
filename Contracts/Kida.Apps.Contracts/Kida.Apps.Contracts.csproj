@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(SolutionDir)ProjectReferences_$(SolutionName).txt"
-          Condition="Exists('$(SolutionDir)ProjectReferences_$(SolutionName).txt')" />
   <Choose>
-    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyAbstractions)\HaleyAbstractions.csproj')">
+    <When Condition="'$(KidaUseHaleyPackageReferences)' == 'false'">
       <ItemGroup><ProjectReference Include="$(HaleyAbstractions)\HaleyAbstractions.csproj"><Name>HaleyAbstractions</Name></ProjectReference></ItemGroup>
     </When>
     <Otherwise><ItemGroup><PackageReference Include="Haley.Abstractions" /></ItemGroup></Otherwise>

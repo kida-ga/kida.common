@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(SolutionDir)ProjectReferences_$(SolutionName).txt" Condition="Exists('$(SolutionDir)ProjectReferences_$(SolutionName).txt')" />
   <PropertyGroup>
     <AssemblyName>Kida.Licensing</AssemblyName>
     <RootNamespace>Kida.Licensing</RootNamespace>
@@ -15,13 +14,13 @@
     <InternalsVisibleTo Include="Kida.Licensing.Tests" />
   </ItemGroup>
   <Choose>
-    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyHelpers)\HaleyHelpers.csproj')">
+    <When Condition="'$(KidaUseHaleyPackageReferences)' == 'false'">
       <ItemGroup><ProjectReference Include="$(HaleyHelpers)\HaleyHelpers.csproj"><Name>HaleyHelpers</Name></ProjectReference></ItemGroup>
     </When>
     <Otherwise><ItemGroup><PackageReference Include="Haley.Helpers" /></ItemGroup></Otherwise>
   </Choose>
   <Choose>
-    <When Condition="'$(KidaUseHaleyPackageReferences)' != 'true' and Exists('$(HaleyHelpersWeb)\HaleyHelpersWeb.csproj')">
+    <When Condition="'$(KidaUseHaleyPackageReferences)' == 'false'">
       <ItemGroup><ProjectReference Include="$(HaleyHelpersWeb)\HaleyHelpersWeb.csproj"><Name>HaleyHelpersWeb</Name></ProjectReference></ItemGroup>
     </When>
     <Otherwise><ItemGroup><PackageReference Include="Haley.Helpers.Web" /></ItemGroup></Otherwise>

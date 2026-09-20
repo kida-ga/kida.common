@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace Kida.Models;
 
 public sealed record LicenseLeaseReceipt(
@@ -6,4 +7,4 @@ public sealed record LicenseLeaseReceipt(
     Guid SubjectId,
     DateTimeOffset AcquiredAt,
     DateTimeOffset ExpiresAt,
-    string Status);
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<EntitlementStatus>))] EntitlementStatus Status);

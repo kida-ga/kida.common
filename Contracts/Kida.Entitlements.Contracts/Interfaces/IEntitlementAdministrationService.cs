@@ -9,7 +9,7 @@ public interface IEntitlementAdministrationService
     ValueTask<EntitlementProductCatalog?> GetProductAsync(Guid productId, CancellationToken cancellationToken = default);
     ValueTask<EntitlementProductCatalog?> GetProductAsync(string audience, string productCode, CancellationToken cancellationToken = default);
     ValueTask<IFeedback<EntitlementPlanInfo>> CreatePlanAsync(CreateEntitlementPlanRequest request, CancellationToken cancellationToken = default);
-    ValueTask<IFeedback<EntitlementPlanInfo>> ChangePlanStatusAsync(Guid planId, string status, CancellationToken cancellationToken = default);
+    ValueTask<IFeedback<EntitlementPlanInfo>> ChangePlanStatusAsync(Guid planId, EntitlementStatus status, CancellationToken cancellationToken = default);
     ValueTask<IFeedback> DeletePlanAsync(Guid planId, CancellationToken cancellationToken = default);
     ValueTask<IFeedback<EntitlementSubscriptionInfo>> CreateSubscriptionAsync(CreateSubscriptionRequest request, CancellationToken cancellationToken = default);
     ValueTask<IReadOnlyCollection<EntitlementSubscriptionInfo>> GetTenantSubscriptionsAsync(Guid tenantId, string audience, string productCode, CancellationToken cancellationToken = default);

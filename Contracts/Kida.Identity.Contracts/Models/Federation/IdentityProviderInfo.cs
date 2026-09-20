@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Haley.Abstractions;
 
 namespace Kida.Models;
@@ -7,7 +8,7 @@ public sealed record IdentityProviderInfo(
     FederationProtocol Protocol,
     string Issuer,
     string DisplayName,
-    string Status,
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<IdentityRecordStatus>))] IdentityRecordStatus Status,
     Guid? TenantId,
     string Configuration,
     IReadOnlyCollection<string> AuthoritativeDomains,

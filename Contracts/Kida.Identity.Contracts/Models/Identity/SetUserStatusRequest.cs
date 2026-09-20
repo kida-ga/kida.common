@@ -1,5 +1,6 @@
+using System.Text.Json.Serialization;
 using Haley.Abstractions;
 
 namespace Kida.Models;
 
-public sealed record SetUserStatusRequest(IdentityStatus Status, string ReasonCode);
+public sealed record SetUserStatusRequest([property: JsonConverter(typeof(JsonNumberEnumConverter<IdentityStatus>))] IdentityStatus Status, string ReasonCode);

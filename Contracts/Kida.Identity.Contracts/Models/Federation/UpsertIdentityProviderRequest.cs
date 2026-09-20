@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Haley.Abstractions;
 
 namespace Kida.Models;
@@ -9,5 +10,5 @@ public sealed record UpsertIdentityProviderRequest(
     string Configuration,
     IReadOnlyCollection<string>? AuthoritativeDomains = null,
     Guid? TenantId = null,
-    string Status = "active",
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<IdentityRecordStatus>))] IdentityRecordStatus Status = IdentityRecordStatus.Active,
     IReadOnlyCollection<string>? SigningCertificates = null);

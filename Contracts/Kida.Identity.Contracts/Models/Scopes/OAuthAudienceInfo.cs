@@ -1,8 +1,9 @@
+using System.Text.Json.Serialization;
 namespace Kida.Models;
 
 public sealed record OAuthAudienceInfo(
     Guid AudienceId,
     string Audience,
-    string Status,
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<IdentityRecordStatus>))] IdentityRecordStatus Status,
     DateTimeOffset CreatedAt,
     DateTimeOffset ModifiedAt);

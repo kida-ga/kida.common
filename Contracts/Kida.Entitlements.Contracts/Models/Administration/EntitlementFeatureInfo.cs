@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace Kida.Models;
 
 public sealed record EntitlementFeatureInfo(
@@ -8,4 +9,4 @@ public sealed record EntitlementFeatureInfo(
     string? Description,
     string ValueType,
     string LicenseMode,
-    string Status);
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<EntitlementStatus>))] EntitlementStatus Status);

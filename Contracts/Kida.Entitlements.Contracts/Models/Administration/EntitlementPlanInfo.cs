@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using System.Text.Json;
 
 namespace Kida.Models;
@@ -8,5 +9,5 @@ public sealed record EntitlementPlanInfo(
     string Code,
     string DisplayName,
     string? BillingPeriod,
-    string Status,
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<EntitlementStatus>))] EntitlementStatus Status,
     IReadOnlyDictionary<string, JsonElement> Features);

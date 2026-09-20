@@ -8,12 +8,20 @@ namespace Kida.Models;
 /// Zero and conflicting combinations are not valid persisted lifecycle states.
 /// </summary>
 [Flags]
-[JsonConverter(typeof(JsonNumberEnumConverter<IdentityStatus>))]
-public enum IdentityStatus : int
+[JsonConverter(typeof(JsonNumberEnumConverter<TenancyStatus>))]
+public enum TenancyStatus : int
 {
     Pending = 1,
     Active = 2,
     Retired = 4,
-    Locked = 8,
     Suspended = 16,
+    Inactive = 32,
+    Revoked = 64,
+    Expired = 128,
+    Cancelled = 4096,
+    Retiring = 32768,
+    Provisioning = 131072,
+    Invited = 262144,
+    Left = 524288,
+    Accepted = 1048576,
 }

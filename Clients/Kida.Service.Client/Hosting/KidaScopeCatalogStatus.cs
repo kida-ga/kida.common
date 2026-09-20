@@ -14,7 +14,7 @@ internal sealed class KidaScopeCatalogStatus
         var enabled = options.Value.RegisterOnStartup;
         _snapshot = new(
             enabled,
-            enabled ? "pending" : "disabled",
+            enabled ? KidaCatalogRegistrationStatus.Pending : KidaCatalogRegistrationStatus.Disabled,
             null,
             null,
             null);
@@ -34,7 +34,7 @@ internal sealed class KidaScopeCatalogStatus
         {
             _snapshot = _snapshot with
             {
-                Status = "registering",
+                Status = KidaCatalogRegistrationStatus.Registering,
                 LastAttemptUtc = attemptedUtc,
                 FailureType = null
             };
@@ -47,7 +47,7 @@ internal sealed class KidaScopeCatalogStatus
         {
             _snapshot = _snapshot with
             {
-                Status = "available",
+                Status = KidaCatalogRegistrationStatus.Available,
                 LastAttemptUtc = succeededUtc,
                 LastSuccessUtc = succeededUtc,
                 FailureType = null
@@ -61,7 +61,7 @@ internal sealed class KidaScopeCatalogStatus
         {
             _snapshot = _snapshot with
             {
-                Status = "unavailable",
+                Status = KidaCatalogRegistrationStatus.Unavailable,
                 LastAttemptUtc = attemptedUtc,
                 FailureType = exception.GetType().Name
             };

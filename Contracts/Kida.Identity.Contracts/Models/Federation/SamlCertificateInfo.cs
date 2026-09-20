@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace Kida.Models;
 
 public sealed record SamlCertificateInfo(
@@ -9,6 +10,6 @@ public sealed record SamlCertificateInfo(
     DateTimeOffset ValidTo,
     string Sha256Fingerprint,
     long Size,
-    string Status,
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<CertificateStatus>))] CertificateStatus Status,
     DateTimeOffset ModifiedAt,
     IReadOnlyCollection<string> ReferencingProviders);

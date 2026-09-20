@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace Kida.Models;
 
 public sealed record AppInstallationInfo(
@@ -8,5 +9,5 @@ public sealed record AppInstallationInfo(
     Guid? OAuthClientId,
     string AppCode,
     string Version,
-    string Status,
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<AppStatus>))] AppStatus Status,
     DateTimeOffset InstalledAt);

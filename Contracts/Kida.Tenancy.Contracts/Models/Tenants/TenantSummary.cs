@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace Kida.Models;
 
 public sealed record TenantSummary(
@@ -5,6 +6,6 @@ public sealed record TenantSummary(
     string Code,
     string DisplayName,
     string Type,
-    string Status,
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<TenancyStatus>))] TenancyStatus Status,
     DateTimeOffset CreatedAt,
     DateTimeOffset ModifiedAt);

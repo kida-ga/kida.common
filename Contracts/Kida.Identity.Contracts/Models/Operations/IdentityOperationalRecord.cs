@@ -1,10 +1,11 @@
+using System.Text.Json.Serialization;
 namespace Kida.Models;
 
 public sealed record IdentityOperationalRecord(
     string RecordKey,
     IdentityOperationalArea Area,
     string Type,
-    string Status,
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<IdentityOperationalStatus>))] IdentityOperationalStatus Status,
     Guid? RecordId,
     Guid? UserId,
     string? UserDisplayName,

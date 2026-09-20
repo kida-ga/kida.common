@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace Kida.Models;
 
 public sealed record AppSummary(
@@ -6,6 +7,6 @@ public sealed record AppSummary(
     string DisplayName,
     string? Description,
     string Type,
-    string Status,
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<AppStatus>))] AppStatus Status,
     string? LatestVersion,
     DateTimeOffset ModifiedAt);

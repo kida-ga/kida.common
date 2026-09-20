@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace Kida.Models;
 
 public sealed record LicensePoolInfo(
@@ -7,7 +8,7 @@ public sealed record LicensePoolInfo(
     Guid? FeatureId,
     string Type,
     int Quantity,
-    string Status,
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<EntitlementStatus>))] EntitlementStatus Status,
     int Assigned,
     int Leased,
     string? DisplayName = null);

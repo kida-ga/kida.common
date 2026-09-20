@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace Kida.Models;
 
 public sealed record AppVersionInfo(
@@ -5,7 +6,7 @@ public sealed record AppVersionInfo(
     Guid AppId,
     string Version,
     string Channel,
-    string Status,
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<AppStatus>))] AppStatus Status,
     DateTimeOffset? ReleasedAt,
     string? RequiredProductCode,
     string? RequiredFeatureCode);

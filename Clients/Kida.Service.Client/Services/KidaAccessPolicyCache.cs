@@ -137,7 +137,7 @@ internal sealed class KidaAccessPolicyCache(
         if (authorizedClientId == Guid.Empty)
             return new(false, "client_grant_missing", []);
         var clientGrant = await GetClientGrantAsync(authorizedClientId, _options.UserAudience, cancellationToken).ConfigureAwait(false);
-        if (!string.Equals(clientGrant.Status, "active", StringComparison.Ordinal))
+        if (!(clientGrant.Status == IdentityRecordStatus.Active))
             return new(false, "client_grant_inactive", []);
         var subjects = NormalizeSubjects([new(request.SubjectType, request.SubjectId), .. request.Subjects ?? []]);
         var path = request.ScopePath is { Count: > 0 }
@@ -204,7 +204,7 @@ internal sealed class KidaAccessPolicyCache(
                 if (revision.ClientId != clientId || !string.Equals(revision.Audience, audience, StringComparison.Ordinal))
                     throw new InvalidOperationException("Kida returned a client grant for a different security boundary.");
                 if (snapshot is null || snapshot.Version != revision.Version ||
-                    !string.Equals(snapshot.Status, revision.Status, StringComparison.Ordinal) ||
+                    !(snapshot.Status == revision.Status) ||
                     !string.Equals(entry.RevisionHash, revision.RevisionHash, StringComparison.Ordinal))
                 {
                     snapshot = await client.GetClientResourceGrantSnapshotAsync(clientId, audience, cancellationToken).ConfigureAwait(false);
@@ -284,7 +284,7 @@ internal sealed class KidaAccessPolicyCache(
     }
 
     private static bool AssignmentIsActive(RoleAssignmentInfo assignment, DateTimeOffset evaluatedAt) =>
-        string.Equals(assignment.Status, "active", StringComparison.Ordinal) &&
+        (assignment.Status == AccessStatus.Active) &&
         assignment.ValidFrom <= evaluatedAt &&
         (assignment.ValidUntil is null || assignment.ValidUntil > evaluatedAt);
 

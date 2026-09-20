@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace Kida.Models;
 
 public sealed record EntitlementProductReleaseInfo(
@@ -5,7 +6,7 @@ public sealed record EntitlementProductReleaseInfo(
     Guid ProductId,
     string Version,
     string ContentHash,
-    string Status,
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<EntitlementStatus>))] EntitlementStatus Status,
     DateTimeOffset FirstRegisteredAt,
     DateTimeOffset LastRegisteredAt,
     int FeatureCount,

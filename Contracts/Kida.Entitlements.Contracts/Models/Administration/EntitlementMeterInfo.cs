@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace Kida.Models;
 
 public sealed record EntitlementMeterInfo(
@@ -8,4 +9,4 @@ public sealed record EntitlementMeterInfo(
     string Unit,
     string Aggregation,
     string Period,
-    string Status);
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<EntitlementStatus>))] EntitlementStatus Status);

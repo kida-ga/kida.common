@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace Kida.Models;
 
 public sealed record EntitlementSubscriptionInfo(
@@ -5,7 +6,7 @@ public sealed record EntitlementSubscriptionInfo(
     Guid TenantId,
     Guid ProductId,
     Guid PlanId,
-    string Status,
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<EntitlementStatus>))] EntitlementStatus Status,
     DateTimeOffset StartsAt,
     DateTimeOffset? TrialEndsAt,
     DateTimeOffset? EndsAt,

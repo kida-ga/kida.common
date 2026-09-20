@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace Kida.Models;
 
 public sealed record EntitlementProductInfo(
@@ -5,6 +6,6 @@ public sealed record EntitlementProductInfo(
     string Code,
     string DisplayName,
     string? Description,
-    string Status,
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<EntitlementStatus>))] EntitlementStatus Status,
     string Audience,
     long Revision);

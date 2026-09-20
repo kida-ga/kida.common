@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace Kida.Models;
 
 /// <summary>
@@ -7,7 +8,7 @@ public sealed record ClientResourceGrantSnapshot(
     Guid ClientId,
     string Audience,
     IReadOnlyCollection<string> AllowedScopes,
-    string Status,
+    [property: JsonConverter(typeof(JsonNumberEnumConverter<IdentityRecordStatus>))] IdentityRecordStatus Status,
     ulong Version,
     string RevisionHash,
     DateTimeOffset ModifiedAt);

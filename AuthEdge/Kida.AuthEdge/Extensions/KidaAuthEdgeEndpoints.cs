@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Kida.Extensions;
@@ -172,6 +173,7 @@ public static class KidaAuthEdgeEndpoints
     private static async Task<IResult> IssueClientTokenAsync(
         [FromBody] KidaAuthEdgeClientTokenRequest request,
         [FromServices] IKidaAuthEdgeClient edge,
+        [FromServices] ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         try
@@ -183,7 +185,7 @@ public static class KidaAuthEdgeEndpoints
         }
         catch (Exception exception)
         {
-            return Failure(exception);
+            return Failure(exception, loggerFactory);
         }
     }
 
@@ -191,6 +193,7 @@ public static class KidaAuthEdgeEndpoints
         [FromBody] AuthenticateRequest request,
         HttpContext context,
         [FromServices] IKidaClient kida,
+        [FromServices] ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         try
@@ -206,13 +209,14 @@ public static class KidaAuthEdgeEndpoints
         }
         catch (Exception exception)
         {
-            return Failure(exception);
+            return Failure(exception, loggerFactory);
         }
     }
 
     private static async Task<IResult> RefreshAsync(
         [FromBody] KidaAuthEdgeRefreshRequest request,
         [FromServices] IKidaClient kida,
+        [FromServices] ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         try
@@ -221,13 +225,14 @@ public static class KidaAuthEdgeEndpoints
         }
         catch (Exception exception)
         {
-            return Failure(exception);
+            return Failure(exception, loggerFactory);
         }
     }
 
     private static async Task<IResult> RevokeSessionAsync(
         Guid sessionId,
         [FromServices] IKidaClient kida,
+        [FromServices] ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         try
@@ -237,13 +242,14 @@ public static class KidaAuthEdgeEndpoints
         }
         catch (Exception exception)
         {
-            return Failure(exception);
+            return Failure(exception, loggerFactory);
         }
     }
 
     private static async Task<IResult> ChangePasswordAsync(
         [FromBody] ChangePasswordRequest request,
         [FromServices] IKidaAuthEdgeClient edge,
+        [FromServices] ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         try
@@ -253,13 +259,14 @@ public static class KidaAuthEdgeEndpoints
         }
         catch (Exception exception)
         {
-            return Failure(exception);
+            return Failure(exception, loggerFactory);
         }
     }
 
     private static async Task<IResult> VerifyPasswordResetAsync(
         [FromBody] KidaAuthEdgePasswordResetVerifyRequest request,
         [FromServices] IKidaAuthEdgeClient edge,
+        [FromServices] ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         try
@@ -273,13 +280,14 @@ public static class KidaAuthEdgeEndpoints
         }
         catch (Exception exception)
         {
-            return Failure(exception);
+            return Failure(exception, loggerFactory);
         }
     }
 
     private static async Task<IResult> CompletePasswordResetAsync(
         [FromBody] KidaAuthEdgePasswordResetCompleteRequest request,
         [FromServices] IKidaAuthEdgeClient edge,
+        [FromServices] ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         try
@@ -293,13 +301,14 @@ public static class KidaAuthEdgeEndpoints
         }
         catch (Exception exception)
         {
-            return Failure(exception);
+            return Failure(exception, loggerFactory);
         }
     }
 
     private static async Task<IResult> VerifyInvitationAsync(
         [FromBody] VerifyIdentityInvitationRequest request,
         [FromServices] IKidaClient kida,
+        [FromServices] ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         try
@@ -308,13 +317,14 @@ public static class KidaAuthEdgeEndpoints
         }
         catch (Exception exception)
         {
-            return Failure(exception);
+            return Failure(exception, loggerFactory);
         }
     }
 
     private static async Task<IResult> CompleteEnrollmentAsync(
         [FromBody] CompleteIdentityEnrollmentRequest request,
         [FromServices] IKidaClient kida,
+        [FromServices] ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         try
@@ -323,13 +333,14 @@ public static class KidaAuthEdgeEndpoints
         }
         catch (Exception exception)
         {
-            return Failure(exception);
+            return Failure(exception, loggerFactory);
         }
     }
 
     private static async Task<IResult> ListMfaMethodsAsync(
         HttpContext context,
         [FromServices] IKidaClient kida,
+        [FromServices] ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         if (!TryGetBearer(context, out var token)) return Results.Unauthorized();
@@ -339,7 +350,7 @@ public static class KidaAuthEdgeEndpoints
         }
         catch (Exception exception)
         {
-            return Failure(exception);
+            return Failure(exception, loggerFactory);
         }
     }
 
@@ -348,6 +359,7 @@ public static class KidaAuthEdgeEndpoints
         HttpContext context,
         [FromServices] IKidaClient kida,
         [FromServices] IOptions<KidaAuthEdgeOptions> options,
+        [FromServices] ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         if (!TryGetBearer(context, out var token)) return Results.Unauthorized();
@@ -362,7 +374,7 @@ public static class KidaAuthEdgeEndpoints
         }
         catch (Exception exception)
         {
-            return Failure(exception);
+            return Failure(exception, loggerFactory);
         }
     }
 
@@ -370,6 +382,7 @@ public static class KidaAuthEdgeEndpoints
         [FromBody] ReplaceRecoveryCodesRequest request,
         HttpContext context,
         [FromServices] IKidaClient kida,
+        [FromServices] ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         if (!TryGetBearer(context, out var token)) return Results.Unauthorized();
@@ -379,13 +392,14 @@ public static class KidaAuthEdgeEndpoints
         }
         catch (Exception exception)
         {
-            return Failure(exception);
+            return Failure(exception, loggerFactory);
         }
     }
 
     private static async Task<IResult> BeginSamlAsync(
         [FromBody] KidaAuthEdgeSamlStartRequest request,
         [FromServices] IKidaAuthEdgeClient edge,
+        [FromServices] ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         try
@@ -399,13 +413,14 @@ public static class KidaAuthEdgeEndpoints
         }
         catch (Exception exception)
         {
-            return Failure(exception);
+            return Failure(exception, loggerFactory);
         }
     }
 
     private static async Task<IResult> CompleteSamlAsync(
         HttpContext context,
         [FromServices] IKidaAuthEdgeClient edge,
+        [FromServices] ILoggerFactory loggerFactory,
         CancellationToken cancellationToken)
     {
         SetNoStore(context);
@@ -434,7 +449,7 @@ public static class KidaAuthEdgeEndpoints
         }
         catch (Exception exception)
         {
-            return Failure(exception);
+            return Failure(exception, loggerFactory);
         }
     }
 
@@ -543,26 +558,47 @@ public static class KidaAuthEdgeEndpoints
         return true;
     }
 
-    private static IResult Failure(Exception exception)
+    internal static IResult Failure(Exception exception, ILoggerFactory loggerFactory)
     {
+        var traceId = (exception as KidaRequestException)?.ResponseTraceId
+            ?? System.Diagnostics.Activity.Current?.Id ?? Guid.NewGuid().ToString("N");
+        var rejectedRequest = exception is KidaRequestException rejected
+            && (int)(rejected.StatusCode ?? HttpStatusCode.BadGateway) < 500;
+        if (!rejectedRequest
+            && exception is not BadHttpRequestException { StatusCode: < 500 })
+        {
+            loggerFactory.CreateLogger("Kida.AuthEdge").LogError(exception,
+                "Kida authentication request failed. TraceId: {TraceId}", traceId);
+        }
+
         if (exception is KidaRequestException requestException)
         {
             return Results.Problem(
                 statusCode: (int)(requestException.StatusCode ?? HttpStatusCode.BadGateway),
                 title: "Kida rejected the authentication request.",
+                detail: requestException.ResponseDetail,
                 extensions: new Dictionary<string, object?>
                 {
-                    ["code"] = requestException.ErrorCode ?? "kida.request_rejected"
+                    ["code"] = requestException.ErrorCode ?? "kida.request_rejected",
+                    ["traceId"] = requestException.ResponseTraceId ?? traceId
                 });
         }
 
-        return Results.Problem(
-            statusCode: StatusCodes.Status503ServiceUnavailable,
-            title: "The internal Kida service is unavailable.",
-            extensions: new Dictionary<string, object?>
-            {
-                ["code"] = "kida.service_unavailable"
-            });
+        var (status, title, code, detail) = exception switch
+        {
+            BadHttpRequestException badRequest => (badRequest.StatusCode,
+                "The authentication request is invalid.", "kida.invalid_request", badRequest.Message),
+            HttpRequestException { StatusCode: { } upstreamStatus } => ((int)upstreamStatus,
+                "The internal Kida service rejected the request.", "kida.upstream_error", (string?)null),
+            HttpRequestException => (StatusCodes.Status503ServiceUnavailable,
+                "The internal Kida service could not be reached.", "kida.service_unavailable", (string?)null),
+            TimeoutException or TaskCanceledException => (StatusCodes.Status504GatewayTimeout,
+                "The internal Kida service did not respond in time.", "kida.service_timeout", (string?)null),
+            _ => (StatusCodes.Status500InternalServerError,
+                "An unexpected error occurred while processing the authentication request.", "kida.internal_error", (string?)null)
+        };
+        return Results.Problem(statusCode: status, title: title, detail: detail,
+            extensions: new Dictionary<string, object?> { ["code"] = code, ["traceId"] = traceId });
     }
 
     private static IResult InvalidRequest() => Results.Problem(

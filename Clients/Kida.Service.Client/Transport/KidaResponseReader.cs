@@ -1,5 +1,6 @@
 using Haley.Abstractions;
 using Haley.Utils;
+using System.Text.Json;
 
 namespace Kida.Service.Client;
 
@@ -21,7 +22,8 @@ internal static class KidaResponseReader
                     ?? throw new KidaRequestException("Kida returned an empty response.", response.StatusCode);
             }
 
-            throw Rejected(response, TryReadErrorCode(content));
+            var problem = TryReadProblem(content);
+            throw Rejected(response, problem.ErrorCode, problem.Detail, problem.TraceId);
         }
         finally
         {
@@ -35,7 +37,8 @@ internal static class KidaResponseReader
         {
             if (response.IsSuccessStatusCode) return;
             var content = (await response.AsStringResponseAsync().ConfigureAwait(false)).Content;
-            throw Rejected(response, TryReadErrorCode(content));
+            var problem = TryReadProblem(content);
+            throw Rejected(response, problem.ErrorCode, problem.Detail, problem.TraceId);
         }
         finally
         {
@@ -43,21 +46,50 @@ internal static class KidaResponseReader
         }
     }
 
-    private static KidaRequestException Rejected(IResponse response, string? errorCode) =>
+    private static KidaRequestException Rejected(IResponse response, string? errorCode, string? detail, string? traceId) =>
         new(
-            $"Kida rejected the request with HTTP {(int)response.StatusCode}.",
+            string.IsNullOrWhiteSpace(detail)
+                ? $"Kida rejected the request with HTTP {(int)response.StatusCode}."
+                : $"Kida rejected the request with HTTP {(int)response.StatusCode}: {detail}",
             response.StatusCode,
-            errorCode);
+            errorCode,
+            detail,
+            traceId);
 
-    private static string? TryReadErrorCode(string? content)
+    private static (string? ErrorCode, string? Detail, string? TraceId) TryReadProblem(string? content)
     {
-        if (string.IsNullOrWhiteSpace(content) ||
-            !content.TrimStart().StartsWith('{') ||
-            !content.IsValidJson(tryParse: true)) return null;
+        if (string.IsNullOrWhiteSpace(content) || !content.TrimStart().StartsWith('{'))
+        {
+            return default;
+        }
 
-        var values = content.FromJson<Dictionary<string, object>>();
-        return values is not null && values.TryGetValue("code", out var code)
-            ? code?.ToString()
-            : null;
+        try
+        {
+            using var document = JsonDocument.Parse(content);
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
+            {
+                return default;
+            }
+
+            var root = document.RootElement;
+            var errorCode = ReadString(root, "code");
+            var detail = ReadString(root, "detail") ?? ReadString(root, "title");
+            return (errorCode, detail, ReadString(root, "traceId"));
+        }
+        catch (JsonException)
+        {
+            return default;
+        }
+    }
+
+    private static string? ReadString(JsonElement root, string propertyName)
+    {
+        if (!root.TryGetProperty(propertyName, out var value) || value.ValueKind != JsonValueKind.String)
+        {
+            return null;
+        }
+
+        var content = value.GetString();
+        return string.IsNullOrWhiteSpace(content) ? null : content;
     }
 }

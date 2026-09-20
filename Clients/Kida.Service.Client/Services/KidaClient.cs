@@ -485,11 +485,19 @@ internal sealed class KidaClient(
         TenantSearchRequest request,
         CancellationToken cancellationToken = default) =>
         await SendWithClientTokenAsync<TenantPage>(
-            () => CreateRequest("kida/tenancy/tenants", cancellationToken)
-                .WithQuery(new QueryParam("query", request.Query ?? string.Empty))
-                .WithQuery(new QueryParam("status", request.Status is null ? string.Empty : ((int)request.Status.Value).ToString(System.Globalization.CultureInfo.InvariantCulture)))
-                .WithQuery(new QueryParam("page", Math.Max(1, request.Page).ToString(System.Globalization.CultureInfo.InvariantCulture)))
-                .WithQuery(new QueryParam("pageSize", Math.Clamp(request.PageSize, 1, 50).ToString(System.Globalization.CultureInfo.InvariantCulture))),
+            () =>
+            {
+                var outbound = CreateRequest("kida/tenancy/tenants", cancellationToken)
+                    .WithQuery(new QueryParam("query", request.Query ?? string.Empty))
+                    .WithQuery(new QueryParam("page", Math.Max(1, request.Page).ToString(System.Globalization.CultureInfo.InvariantCulture)))
+                    .WithQuery(new QueryParam("pageSize", Math.Clamp(request.PageSize, 1, 50).ToString(System.Globalization.CultureInfo.InvariantCulture)));
+                if (request.Status is not null)
+                {
+                    outbound.WithQuery(new QueryParam("status", ((int)request.Status.Value).ToString(System.Globalization.CultureInfo.InvariantCulture)));
+                }
+
+                return outbound;
+            },
             Method.GET,
             KidaTenancyScopes.Read,
             cancellationToken).ConfigureAwait(false);
@@ -605,7 +613,19 @@ internal sealed class KidaClient(
         await SendWithClientTokenAsync<AppCatalogReceipt>(() => CreateJsonRequest("kida/apps/catalog", request, cancellationToken), Method.POST, KidaAppsScopes.CatalogRegister, cancellationToken).ConfigureAwait(false);
 
     public async ValueTask<AppPage> SearchAppsAsync(string? query = null, AppStatus? status = null, int page = 1, int pageSize = 20, CancellationToken cancellationToken = default) =>
-        await SendWithClientTokenAsync<AppPage>(() => CreateRequest("kida/apps/catalog", cancellationToken).WithQuery(new QueryParam("query", query ?? string.Empty)).WithQuery(new QueryParam("status", status is null ? string.Empty : ((int)status.Value).ToString(System.Globalization.CultureInfo.InvariantCulture))).WithQuery(new QueryParam("page", Math.Max(page, 1).ToString(System.Globalization.CultureInfo.InvariantCulture))).WithQuery(new QueryParam("pageSize", Math.Clamp(pageSize, 1, 50).ToString(System.Globalization.CultureInfo.InvariantCulture))), Method.GET, KidaAppsScopes.CatalogRead, cancellationToken).ConfigureAwait(false);
+        await SendWithClientTokenAsync<AppPage>(() =>
+        {
+            var outbound = CreateRequest("kida/apps/catalog", cancellationToken)
+                .WithQuery(new QueryParam("query", query ?? string.Empty))
+                .WithQuery(new QueryParam("page", Math.Max(page, 1).ToString(System.Globalization.CultureInfo.InvariantCulture)))
+                .WithQuery(new QueryParam("pageSize", Math.Clamp(pageSize, 1, 50).ToString(System.Globalization.CultureInfo.InvariantCulture)));
+            if (status is not null)
+            {
+                outbound.WithQuery(new QueryParam("status", ((int)status.Value).ToString(System.Globalization.CultureInfo.InvariantCulture)));
+            }
+
+            return outbound;
+        }, Method.GET, KidaAppsScopes.CatalogRead, cancellationToken).ConfigureAwait(false);
 
     public async ValueTask<AppInstallationInfo> InstallAppAsync(InstallAppRequest request, CancellationToken cancellationToken = default) =>
         await SendWithClientTokenAsync<AppInstallationInfo>(() => CreateJsonRequest("kida/apps/installations", request, cancellationToken), Method.POST, KidaAppsScopes.InstallationsManage, cancellationToken).ConfigureAwait(false);

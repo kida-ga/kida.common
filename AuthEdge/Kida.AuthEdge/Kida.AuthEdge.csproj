@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <InternalsVisibleTo Include="Kida.Service.Tests" />
     <None Include="PACKAGE.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <Choose>

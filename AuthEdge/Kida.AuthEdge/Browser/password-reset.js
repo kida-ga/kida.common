@@ -27,7 +27,7 @@
 
   const readProblem = async (response) => {
     const problem = await response.json().catch(() => ({}));
-    return messages[problem.code] || (response.status === 429
+    return problem.detail || messages[problem.code] || problem.title || (response.status === 429
       ? "Too many attempts. Wait before trying again."
       : "Password recovery could not be completed.");
   };

@@ -88,7 +88,7 @@
       });
       if (!response.ok) {
         const problem = await response.json().catch(() => ({}));
-        show(messages[problem.code] || (response.status === 429
+        show(problem.detail || messages[problem.code] || problem.title || (response.status === 429
           ? "Too many attempts. Wait a minute and try again."
           : "The password could not be changed. Try again."), "error");
         return;

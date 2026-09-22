@@ -1,9 +1,9 @@
 namespace Kida.Models;
 
-public sealed record CompletePasswordResetRequest(
-    Guid GrantId,
+public sealed record ClientPasswordResetVerificationRequest(
+    Guid ChallengeId,
     Guid ClientId,
     string Resource,
-    string NewPassword,
+    string Code,
     string? ReturnUri = null,
     string? State = null);

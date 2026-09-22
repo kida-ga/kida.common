@@ -1,3 +1,4 @@
+using Haley.Models;
 using Kida.Models;
 
 namespace Kida.Service.Client;

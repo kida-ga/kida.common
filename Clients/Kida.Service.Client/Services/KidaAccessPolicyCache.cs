@@ -1,3 +1,4 @@
+using Haley.Models;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Security.Cryptography;

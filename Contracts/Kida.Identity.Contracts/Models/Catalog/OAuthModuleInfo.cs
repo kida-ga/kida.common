@@ -1,3 +1,4 @@
+using Haley.Models;
 using System.Text.Json.Serialization;
 namespace Kida.Models;
 public sealed record OAuthModuleInfo(Guid ModuleId, string Code, string DisplayName, string? Description, string OwnerFamily, [property: JsonConverter(typeof(JsonNumberEnumConverter<IdentityRecordStatus>))] IdentityRecordStatus Status, IReadOnlyCollection<OAuthModuleVersionInfo> Versions, IReadOnlyCollection<string> Audiences, IReadOnlyCollection<OAuthScopeInfo> Scopes, DateTimeOffset CreatedAt, DateTimeOffset ModifiedAt, DateTimeOffset LastRegisteredAt);

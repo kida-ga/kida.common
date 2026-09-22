@@ -1,3 +1,4 @@
+using Haley.Models;
 using System.Text.Json.Serialization;
 namespace Kida.Models;
 

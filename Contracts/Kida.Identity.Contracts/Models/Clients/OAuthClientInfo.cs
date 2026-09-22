@@ -1,3 +1,4 @@
+using Haley.Models;
 using Haley.Abstractions;
 using System.Text.Json.Serialization;
 

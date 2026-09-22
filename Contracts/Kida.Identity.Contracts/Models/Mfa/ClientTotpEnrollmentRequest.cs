@@ -1,7 +1,7 @@
 using Haley.Abstractions;
 
 namespace Kida.Models;
-public sealed record BeginTotpEnrollmentRequest(
+public sealed record ClientTotpEnrollmentRequest(
     Guid UserId,
     string AccountLabel,
     string? ReturnUri = null,

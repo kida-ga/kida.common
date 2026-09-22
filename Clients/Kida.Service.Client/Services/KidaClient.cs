@@ -229,7 +229,7 @@ internal sealed class KidaClient(
     }
 
     public async ValueTask<PasswordResetInitiationResult> BeginPasswordResetAsync(
-        BeginPasswordResetRequest request,
+        ClientPasswordResetRequest request,
         CancellationToken cancellationToken = default)
     {
         var boundRequest = request with
@@ -681,7 +681,7 @@ internal sealed class KidaClient(
 
     public async ValueTask<TotpEnrollmentReceipt> BeginTotpEnrollmentAsync(
         string userAccessToken,
-        BeginTotpEnrollmentRequest request,
+        ClientTotpEnrollmentRequest request,
         CancellationToken cancellationToken = default) =>
         await SendWithUserTokenAsync<TotpEnrollmentReceipt>(
             () => CreateJsonRequest("kida/identity/mfa/enrollments", request, cancellationToken),
@@ -826,7 +826,7 @@ internal sealed class KidaClient(
         string? state = null,
         CancellationToken cancellationToken = default)
     {
-        var request = new VerifyPasswordResetCodeRequest(
+        var request = new ClientPasswordResetVerificationRequest(
             challengeId,
             _options.ClientId,
             _options.UserAudience,
@@ -852,7 +852,7 @@ internal sealed class KidaClient(
         CancellationToken cancellationToken = default) =>
         await SendAnonymousAsync<PasswordResetCompletionReceipt>(
             "kida/identity/password/resets/complete",
-            new CompletePasswordResetRequest(
+            new ClientPasswordResetCompletionRequest(
                 grantId,
                 _options.ClientId,
                 _options.UserAudience,

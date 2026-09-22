@@ -1,3 +1,4 @@
+using Haley.Models;
 using Kida.Abstractions;
 using Kida.Constants;
 using Kida.Models;
@@ -23,7 +24,7 @@ public interface IKidaClient
     ValueTask ReleaseUserLoginProtectionAsync(Guid userId, CancellationToken cancellationToken = default) => ValueTask.FromException(new NotSupportedException());
     ValueTask ResetUserPasswordAsync(Guid userId, ResetUserPasswordRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException(new NotSupportedException());
     ValueTask ChangePasswordAsync(ChangePasswordRequest request, CancellationToken cancellationToken = default);
-    ValueTask<PasswordResetInitiationResult> BeginPasswordResetAsync(BeginPasswordResetRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<PasswordResetInitiationResult>(new NotSupportedException());
+    ValueTask<PasswordResetInitiationResult> BeginPasswordResetAsync(ClientPasswordResetRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<PasswordResetInitiationResult>(new NotSupportedException());
     ValueTask<OAuthScopeRegistrationResult> RegisterScopesAsync(RegisterOAuthScopesRequest request, CancellationToken cancellationToken = default);
     ValueTask<AccessResult> RegisterModuleAsync(RegisterModuleRequest request, CancellationToken cancellationToken = default);
     ValueTask<IReadOnlyCollection<AccessModuleInfo>> ListModulesAsync(CancellationToken cancellationToken = default) => ValueTask.FromException<IReadOnlyCollection<AccessModuleInfo>>(new NotSupportedException());
@@ -84,6 +85,6 @@ public interface IKidaClient
     ValueTask<UserProfile> GetProfileAsync(string userAccessToken, CancellationToken cancellationToken = default);
     ValueTask<UserProfile> UpdateProfileAsync(string userAccessToken, UpdateUserProfileRequest request, CancellationToken cancellationToken = default);
     ValueTask<IReadOnlyCollection<MfaMethodInfo>> ListMfaMethodsAsync(string userAccessToken, CancellationToken cancellationToken = default) => ValueTask.FromException<IReadOnlyCollection<MfaMethodInfo>>(new NotSupportedException());
-    ValueTask<TotpEnrollmentReceipt> BeginTotpEnrollmentAsync(string userAccessToken, BeginTotpEnrollmentRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<TotpEnrollmentReceipt>(new NotSupportedException());
+    ValueTask<TotpEnrollmentReceipt> BeginTotpEnrollmentAsync(string userAccessToken, ClientTotpEnrollmentRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<TotpEnrollmentReceipt>(new NotSupportedException());
     ValueTask<RecoveryCodesReceipt> ReplaceRecoveryCodesAsync(string userAccessToken, ReplaceRecoveryCodesRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<RecoveryCodesReceipt>(new NotSupportedException());
 }

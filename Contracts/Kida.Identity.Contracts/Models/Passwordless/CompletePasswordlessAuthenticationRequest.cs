@@ -1,3 +1,4 @@
+using Haley.Models;
 namespace Kida.Models;
 
 public sealed record CompletePasswordlessAuthenticationRequest(

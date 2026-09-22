@@ -55,6 +55,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0AB3BF05
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kida.Licensing.Tests", "Tests\Kida.Licensing.Tests\Kida.Licensing.Tests.csproj", "{D52267C4-4B12-4F7E-8ED0-07F8B6C7E40B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaleyHelpersIdentity", "..\..\HaleyProject\HaleyHelpers.Identity\HaleyHelpersIdentity\HaleyHelpersIdentity.csproj", "{185A7D03-10F5-4B76-9561-0B19E28CA764}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -305,6 +307,18 @@ Global
 		{D52267C4-4B12-4F7E-8ED0-07F8B6C7E40B}.Release|x64.Build.0 = Release|Any CPU
 		{D52267C4-4B12-4F7E-8ED0-07F8B6C7E40B}.Release|x86.ActiveCfg = Release|Any CPU
 		{D52267C4-4B12-4F7E-8ED0-07F8B6C7E40B}.Release|x86.Build.0 = Release|Any CPU
+		{185A7D03-10F5-4B76-9561-0B19E28CA764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{185A7D03-10F5-4B76-9561-0B19E28CA764}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{185A7D03-10F5-4B76-9561-0B19E28CA764}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{185A7D03-10F5-4B76-9561-0B19E28CA764}.Debug|x64.Build.0 = Debug|Any CPU
+		{185A7D03-10F5-4B76-9561-0B19E28CA764}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{185A7D03-10F5-4B76-9561-0B19E28CA764}.Debug|x86.Build.0 = Debug|Any CPU
+		{185A7D03-10F5-4B76-9561-0B19E28CA764}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{185A7D03-10F5-4B76-9561-0B19E28CA764}.Release|Any CPU.Build.0 = Release|Any CPU
+		{185A7D03-10F5-4B76-9561-0B19E28CA764}.Release|x64.ActiveCfg = Release|Any CPU
+		{185A7D03-10F5-4B76-9561-0B19E28CA764}.Release|x64.Build.0 = Release|Any CPU
+		{185A7D03-10F5-4B76-9561-0B19E28CA764}.Release|x86.ActiveCfg = Release|Any CPU
+		{185A7D03-10F5-4B76-9561-0B19E28CA764}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -330,6 +344,7 @@ Global
 		{DC1C5044-4082-4367-86C4-90D6F604F476} = {EFEDF492-E40B-AD56-E85B-4AEF1412A5E7}
 		{62B33645-C267-4BD5-B13E-874960EF92A7} = {EFEDF492-E40B-AD56-E85B-4AEF1412A5E7}
 		{05E69561-53C2-44BA-B2E4-E670950D4386} = {EFEDF492-E40B-AD56-E85B-4AEF1412A5E7}
+		{185A7D03-10F5-4B76-9561-0B19E28CA764} = {EFEDF492-E40B-AD56-E85B-4AEF1412A5E7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {35193872-DC82-4FBD-BB99-C481C2FD1404}

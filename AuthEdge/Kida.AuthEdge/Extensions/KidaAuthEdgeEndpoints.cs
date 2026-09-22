@@ -1,3 +1,4 @@
+using Haley.Models;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
@@ -355,7 +356,7 @@ public static class KidaAuthEdgeEndpoints
     }
 
     private static async Task<IResult> BeginMfaEnrollmentAsync(
-        [FromBody] BeginTotpEnrollmentRequest request,
+        [FromBody] ClientTotpEnrollmentRequest request,
         HttpContext context,
         [FromServices] IKidaClient kida,
         [FromServices] IOptions<KidaAuthEdgeOptions> options,

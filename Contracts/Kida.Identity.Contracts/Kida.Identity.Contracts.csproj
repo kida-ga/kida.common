@@ -29,4 +29,12 @@
       <ItemGroup><PackageReference Include="Haley.Helpers" /></ItemGroup>
     </Otherwise>
   </Choose>
+  <Choose>
+    <When Condition="'$(KidaUseHaleyPackageReferences)' == 'false'">
+      <ItemGroup><ProjectReference Include="$(HaleyHelpersIdentityProj)" /></ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup><PackageReference Include="Haley.Helpers.Identity" /></ItemGroup>
+    </Otherwise>
+  </Choose>
 </Project>

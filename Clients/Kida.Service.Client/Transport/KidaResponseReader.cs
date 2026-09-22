@@ -1,3 +1,4 @@
+using Kida.Utils;
 using Haley.Abstractions;
 using Haley.Utils;
 using System.Text.Json;
@@ -6,6 +7,8 @@ namespace Kida.Service.Client;
 
 internal static class KidaResponseReader
 {
+    private static readonly JsonSerializerOptions ClientJson = ClientIdentityJson.CreateOptions(ObjectSerialization.GenerateNewOptions(true));
+
     internal static async Task<T> ReadAsync<T>(IResponse response)
     {
         try
@@ -18,7 +21,7 @@ internal static class KidaResponseReader
                     throw new KidaRequestException("Kida returned an empty response.", response.StatusCode);
                 }
 
-                return content.FromJson<T>()
+                return content.FromJson<T>(ClientJson)
                     ?? throw new KidaRequestException("Kida returned an empty response.", response.StatusCode);
             }
 

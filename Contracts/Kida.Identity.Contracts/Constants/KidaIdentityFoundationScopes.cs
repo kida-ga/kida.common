@@ -11,6 +11,11 @@ public static class KidaIdentityFoundationScopes
     public const string ResourceHeader = "X-Kida-Identity-Resource";
     public static string ForOperation(string operation) => operation switch
     {
+        "BeginVerificationPasswordlessLogin" or "CompleteVerificationPasswordlessLogin" => KidaIdentityScopes.Authenticate,
+        "BeginVerificationPasswordReset" or "CompleteVerificationPasswordReset" => KidaIdentityScopes.PasswordResetRequest,
+        "BeginVerificationOnboarding" or "CompleteVerificationOnboarding" => KidaIdentityScopes.UsersInvite,
+        "BeginVerificationEmailVerification" or "CompleteVerificationEmailVerification" => KidaIdentityScopes.UsersManage,
+        "GetEmailVerification" => KidaIdentityScopes.UsersResolve,
         "BeginPasswordReset" or "VerifyPasswordResetCode" or "CompletePasswordReset" => KidaIdentityScopes.PasswordResetRequest,
         "GetAccount" or "FindAccount" or "GetProfile" => KidaIdentityScopes.UsersResolve,
         "EnsureAccount" => AccountsEnsure,

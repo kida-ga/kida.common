@@ -591,6 +591,9 @@ internal sealed class KidaClient(
     public async ValueTask<EntitlementPlanInfo> CreateEntitlementPlanAsync(CreateEntitlementPlanRequest request, CancellationToken cancellationToken = default) =>
         await SendWithClientTokenAsync<EntitlementPlanInfo>(() => CreateJsonRequest("kida/entitlements/plans", request, cancellationToken), Method.POST, KidaEntitlementsScopes.PlansManage, cancellationToken).ConfigureAwait(false);
 
+    public async ValueTask<EntitlementPlanInfo> ChangeEntitlementPlanStatusAsync(Guid planId, ChangeEntitlementPlanStatusRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<EntitlementPlanInfo>(() => CreateJsonRequest($"kida/entitlements/plans/{planId:D}/status", request, cancellationToken), Method.POST, KidaEntitlementsScopes.PlansManage, cancellationToken).ConfigureAwait(false);
+
     public async ValueTask<EntitlementSubscriptionInfo> CreateEntitlementSubscriptionAsync(CreateSubscriptionRequest request, CancellationToken cancellationToken = default) =>
         await SendWithClientTokenAsync<EntitlementSubscriptionInfo>(() => CreateJsonRequest("kida/entitlements/subscriptions", request, cancellationToken), Method.POST, KidaEntitlementsScopes.SubscriptionsManage, cancellationToken).ConfigureAwait(false);
 

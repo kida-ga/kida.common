@@ -13,7 +13,7 @@ public enum IdentityOperationalArea
     Mfa,
     VerificationChallenges,
     VerificationGrants,
-    Saml,
+    FederationAttempts,
     Sessions,
     RefreshFamilies,
     LoginAttempts,

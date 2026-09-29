@@ -15,6 +15,8 @@ public static class KidaIdentityFoundationScopes
         "BeginVerificationPasswordReset" or "CompleteVerificationPasswordReset" => KidaIdentityScopes.PasswordResetRequest,
         "BeginVerificationOnboarding" or "CompleteVerificationOnboarding" => KidaIdentityScopes.UsersInvite,
         "BeginVerificationEmailVerification" or "CompleteVerificationEmailVerification" => KidaIdentityScopes.UsersManage,
+        "DiscoverIdentityProviders" or "BeginFederation" => KidaIdentityScopes.Authenticate,
+        "CompleteSamlFederation" or "CompleteExternalFederation" or "RedeemFederation" => KidaIdentityScopes.FederationExchange,
         "GetEmailVerification" => KidaIdentityScopes.UsersResolve,
         "BeginPasswordReset" or "VerifyPasswordResetCode" or "CompletePasswordReset" => KidaIdentityScopes.PasswordResetRequest,
         "GetAccount" or "FindAccount" or "GetProfile" => KidaIdentityScopes.UsersResolve,

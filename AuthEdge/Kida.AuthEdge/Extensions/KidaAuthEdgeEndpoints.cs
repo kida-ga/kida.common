@@ -405,7 +405,7 @@ public static class KidaAuthEdgeEndpoints
     {
         try
         {
-            return Results.Ok(await edge.BeginSamlAuthenticationAsync(
+            return Results.Ok(await edge.BeginFederationAsync(
                 request.ProviderCode,
                 request.ReturnUri,
                 request.State,
@@ -433,20 +433,10 @@ public static class KidaAuthEdgeEndpoints
                 form["SAMLResponse"].ToString(),
                 form["RelayState"].ToString(),
                 cancellationToken).ConfigureAwait(false);
-            var nonce = Convert.ToBase64String(RandomNumberGenerator.GetBytes(18));
-            var destinationUri = new Uri(handoff.ReturnUri);
-            context.Response.Headers.ContentSecurityPolicy =
-                $"default-src 'none'; script-src 'nonce-{nonce}'; form-action {destinationUri.GetLeftPart(UriPartial.Authority)}; base-uri 'none'; frame-ancestors 'none'";
-            var destination = WebUtility.HtmlEncode(handoff.ReturnUri);
-            var code = WebUtility.HtmlEncode(handoff.Code);
-            var state = WebUtility.HtmlEncode(handoff.State);
-            return Results.Content($"""
-                <!doctype html><html><head><meta charset="utf-8"><title>Completing sign-in</title></head>
-                <body><form id="handoff" method="post" action="{destination}">
-                <input type="hidden" name="kida_code" value="{code}">
-                <input type="hidden" name="state" value="{state}"></form>
-                <script nonce="{nonce}">document.getElementById('handoff').submit();</script></body></html>
-                """, "text/html; charset=utf-8");
+            var page = FederationHandoffPage.Create(handoff.ReturnUri, handoff.Code, handoff.State, "kida_code");
+            context.Response.Headers.ContentSecurityPolicy = page.ContentSecurityPolicy;
+            context.Response.Headers["Referrer-Policy"] = "no-referrer";
+            return Results.Content(page.Html, "text/html; charset=utf-8");
         }
         catch (Exception exception)
         {

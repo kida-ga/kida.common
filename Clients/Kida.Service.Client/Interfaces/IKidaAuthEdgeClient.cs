@@ -1,3 +1,4 @@
+using Haley.Abstractions;
 using Haley.Models;
 using Kida.Models;
 
@@ -42,14 +43,14 @@ public interface IKidaAuthEdgeClient
         string? state = null,
         CancellationToken cancellationToken = default);
 
-    ValueTask<SamlAuthenticationStart> BeginSamlAuthenticationAsync(
+    ValueTask<FederationStart> BeginFederationAsync(
         string providerCode,
         string returnUri,
         string state,
         string codeChallenge,
         CancellationToken cancellationToken = default);
 
-    ValueTask<SamlAuthenticationHandoff> CompleteSamlAuthenticationAsync(
+    ValueTask<FederationHandoff> CompleteSamlAuthenticationAsync(
         string samlResponse,
         string relayState,
         CancellationToken cancellationToken = default);

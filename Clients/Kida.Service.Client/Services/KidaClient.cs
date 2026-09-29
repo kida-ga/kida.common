@@ -83,7 +83,7 @@ internal sealed class KidaClient(
 
     public async ValueTask<FederatedIdentityResult> RedeemFederationHandoffAsync(RedeemFederationHandoffRequest request, CancellationToken cancellationToken = default) =>
         await SendWithClientTokenAsync<FederatedIdentityResult>(
-            () => CreateJsonRequest("kida/identity/federation/handoffs", request with { ClientId = _options.ClientId }, cancellationToken),
+            () => CreateJsonRequest("kida/identity/federation/handoffs", request with { ApplicationId = _options.ClientId }, cancellationToken),
             Method.POST, KidaIdentityScopes.FederationExchange, cancellationToken).ConfigureAwait(false);
 
     public async ValueTask<UserIdentity?> ResolveUserAsync(
@@ -864,16 +864,16 @@ internal sealed class KidaClient(
                 state),
             cancellationToken).ConfigureAwait(false);
 
-    public async ValueTask<SamlAuthenticationStart> BeginSamlAuthenticationAsync(
+    public async ValueTask<FederationStart> BeginFederationAsync(
         string providerCode,
         string returnUri,
         string state,
         string codeChallenge,
         CancellationToken cancellationToken = default) =>
-        await SendWithClientTokenAsync<SamlAuthenticationStart>(
+        await SendWithClientTokenAsync<FederationStart>(
             () => CreateJsonRequest(
-                "kida/identity/saml/start",
-                new BeginSamlAuthenticationRequest(
+                "kida/identity/federation/attempts",
+                new BeginFederationRequest(
                     _options.ClientId,
                     _options.UserAudience,
                     providerCode,
@@ -885,11 +885,11 @@ internal sealed class KidaClient(
             KidaIdentityScopes.Authenticate,
             cancellationToken).ConfigureAwait(false);
 
-    public async ValueTask<SamlAuthenticationHandoff> CompleteSamlAuthenticationAsync(
+    public async ValueTask<FederationHandoff> CompleteSamlAuthenticationAsync(
         string samlResponse,
         string relayState,
         CancellationToken cancellationToken = default) =>
-        await SendWithClientTokenAsync<SamlAuthenticationHandoff>(
+        await SendWithClientTokenAsync<FederationHandoff>(
             () => CreateJsonRequest(
                 "kida/identity/saml/complete",
                 new CompleteSamlAuthenticationRequest(samlResponse, relayState, _options.ClientId),

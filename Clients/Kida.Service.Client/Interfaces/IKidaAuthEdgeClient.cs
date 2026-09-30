@@ -10,6 +10,10 @@ namespace Kida.Service.Client;
 /// </summary>
 public interface IKidaAuthEdgeClient
 {
+    ValueTask<IReadOnlyCollection<ProviderDiscovery>> DiscoverIdentityProvidersAsync(ProviderDiscoveryRequest request, CancellationToken cancellationToken = default) =>
+        ValueTask.FromException<IReadOnlyCollection<ProviderDiscovery>>(new NotSupportedException());
+    ValueTask<FederationStart> BeginFederationAsync(BeginFederationRequest request, CancellationToken cancellationToken = default) =>
+        ValueTask.FromException<FederationStart>(new NotSupportedException());
     ValueTask<PasswordlessAuthenticationInitiationResult> BeginPasswordlessAuthenticationAsync(
         BeginPasswordlessAuthenticationRequest request,
         CancellationToken cancellationToken = default) =>

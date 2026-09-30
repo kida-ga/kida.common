@@ -7,6 +7,10 @@ using Kida.Utils;
 namespace Kida.Service.Client;
 public interface IKidaClient
 {
+    ValueTask<IReadOnlyCollection<ProviderDiscovery>> DiscoverIdentityProvidersAsync(ProviderDiscoveryRequest request, CancellationToken cancellationToken = default) =>
+        ValueTask.FromException<IReadOnlyCollection<ProviderDiscovery>>(new NotSupportedException());
+    ValueTask<FederationStart> BeginFederationAsync(BeginFederationRequest request, CancellationToken cancellationToken = default) =>
+        ValueTask.FromException<FederationStart>(new NotSupportedException());
     ValueTask<AuthenticationResult> AuthenticateAsync(AuthenticateRequest request, CancellationToken cancellationToken = default);
     ValueTask<PasswordlessAuthenticationInitiationResult> BeginPasswordlessAuthenticationAsync(BeginPasswordlessAuthenticationRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<PasswordlessAuthenticationInitiationResult>(new NotSupportedException());
     ValueTask<PasswordlessAuthenticationResult> CompletePasswordlessAuthenticationAsync(CompletePasswordlessAuthenticationRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<PasswordlessAuthenticationResult>(new NotSupportedException());

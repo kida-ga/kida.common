@@ -12,6 +12,8 @@ public sealed class KidaAuthEdgeOptions
     public bool MapOnboardingCeremonies { get; set; } = true;
     public bool MapMfaCeremonies { get; set; } = true;
     public bool MapSamlCeremonies { get; set; } = true;
+    /// <summary>Controls SAML and signed callback starts. MapSamlCeremonies remains a configuration alias.</summary>
+    public bool MapFederationCeremonies { get => MapSamlCeremonies; set => MapSamlCeremonies = value; }
 
     /// <summary>
     /// Raw Kida access and refresh tokens are returned when enabled. Product browser

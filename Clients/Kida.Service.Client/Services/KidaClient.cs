@@ -864,26 +864,23 @@ internal sealed class KidaClient(
                 state),
             cancellationToken).ConfigureAwait(false);
 
+    public async ValueTask<IReadOnlyCollection<ProviderDiscovery>> DiscoverIdentityProvidersAsync(ProviderDiscoveryRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<IReadOnlyCollection<ProviderDiscovery>>(
+            () => CreateJsonRequest("kida/identity/federation/discovery", request with { ApplicationId = _options.ClientId, Context = _options.UserAudience }, cancellationToken),
+            Method.POST, KidaIdentityScopes.Authenticate, cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<FederationStart> BeginFederationAsync(BeginFederationRequest request, CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<FederationStart>(
+            () => CreateJsonRequest("kida/identity/federation/attempts", request with { ApplicationId = _options.ClientId, Context = _options.UserAudience }, cancellationToken),
+            Method.POST, KidaIdentityScopes.Authenticate, cancellationToken).ConfigureAwait(false);
+
     public async ValueTask<FederationStart> BeginFederationAsync(
         string providerCode,
         string returnUri,
         string state,
         string codeChallenge,
         CancellationToken cancellationToken = default) =>
-        await SendWithClientTokenAsync<FederationStart>(
-            () => CreateJsonRequest(
-                "kida/identity/federation/attempts",
-                new BeginFederationRequest(
-                    _options.ClientId,
-                    _options.UserAudience,
-                    providerCode,
-                    returnUri,
-                    state,
-                    codeChallenge),
-                cancellationToken),
-            Method.POST,
-            KidaIdentityScopes.Authenticate,
-            cancellationToken).ConfigureAwait(false);
+        await BeginFederationAsync(new BeginFederationRequest(_options.ClientId, _options.UserAudience, providerCode, returnUri, state, codeChallenge), cancellationToken).ConfigureAwait(false);
 
     public async ValueTask<FederationHandoff> CompleteSamlAuthenticationAsync(
         string samlResponse,

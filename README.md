@@ -211,3 +211,11 @@ private keys, client secrets, appsettings, and operational policy files. Public
 source is an interoperability boundary, not an authorization boundary: Kida still
 enforces signature, audience, token use, scope, tenant, and subject authorization at
 runtime.
+
+## Corporate authentication
+
+`IKidaClient` and `IKidaAuthEdgeClient` expose `DiscoverIdentityProvidersAsync(ProviderDiscoveryRequest)` and `BeginFederationAsync(BeginFederationRequest)`. The client always replaces application/context fields with its configured client ID and user audience. Leave `ProviderCode` empty and supply `EmailOrDomain` for domain discovery with an application default fallback. Multiple domain matches require an explicit provider choice.
+
+AuthEdge maps `POST /api/auth/federation/discovery` and `POST /api/auth/federation/attempts`. The latter takes `KidaAuthEdgeFederationStartRequest` (`ReturnUri`, `State`, `CodeChallenge`, optional `ProviderCode` and `EmailOrDomain`). Both routes are rate limited and use the product's configured machine client. `MapFederationCeremonies=false` disables them and the legacy SAML routes; `MapSamlCeremonies` remains a configuration alias. Existing `/saml/start` callers continue to work.
+
+The product backend owns the browser state and PKCE verifier. It sends the browser to the returned `AuthorizationUrl`, validates returned state, then calls `RedeemFederationHandoffAsync` with its original verifier. The bridge posts its signed proof to Kida's configured callback; Kida posts only an opaque handoff and state to the registered product callback. AuthEdge does not create the product's browser session automatically.

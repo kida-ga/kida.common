@@ -92,8 +92,14 @@ public static class KidaAuthEdgeEndpoints
                 .AllowAnonymous();
         }
 
-        if (edge.MapSamlCeremonies)
+        if (edge.MapFederationCeremonies)
         {
+            group.MapPost("/federation/discovery", DiscoverIdentityProvidersAsync)
+                .RequireRateLimiting(KidaAuthEdgeRateLimits.Federation)
+                .AllowAnonymous();
+            group.MapPost("/federation/attempts", BeginFederationAsync)
+                .RequireRateLimiting(KidaAuthEdgeRateLimits.Federation)
+                .AllowAnonymous();
             group.MapPost("/saml/start", BeginSamlAsync)
                 .RequireRateLimiting(KidaAuthEdgeRateLimits.Federation)
                 .AllowAnonymous();
@@ -395,6 +401,30 @@ public static class KidaAuthEdgeEndpoints
         {
             return Failure(exception, loggerFactory);
         }
+    }
+
+    private static async Task<IResult> DiscoverIdentityProvidersAsync(
+        [FromBody] ProviderDiscoveryRequest request,
+        [FromServices] IKidaAuthEdgeClient edge,
+        [FromServices] ILoggerFactory loggerFactory,
+        CancellationToken cancellationToken)
+    {
+        try { return Results.Ok(await edge.DiscoverIdentityProvidersAsync(request, cancellationToken).ConfigureAwait(false)); }
+        catch (Exception exception) { return Failure(exception, loggerFactory); }
+    }
+
+    private static async Task<IResult> BeginFederationAsync(
+        [FromBody] KidaAuthEdgeFederationStartRequest request,
+        [FromServices] IKidaAuthEdgeClient edge,
+        [FromServices] ILoggerFactory loggerFactory,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            return Results.Ok(await edge.BeginFederationAsync(new BeginFederationRequest(Guid.Empty, string.Empty,
+                request.ProviderCode, request.ReturnUri, request.State, request.CodeChallenge, request.EmailOrDomain), cancellationToken).ConfigureAwait(false));
+        }
+        catch (Exception exception) { return Failure(exception, loggerFactory); }
     }
 
     private static async Task<IResult> BeginSamlAsync(

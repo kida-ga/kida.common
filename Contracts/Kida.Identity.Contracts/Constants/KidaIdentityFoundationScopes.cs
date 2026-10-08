@@ -21,7 +21,7 @@ public static class KidaIdentityFoundationScopes
         "BeginPasswordReset" or "VerifyPasswordResetCode" or "CompletePasswordReset" => KidaIdentityScopes.PasswordResetRequest,
         "GetAccount" or "FindAccount" or "GetProfile" => KidaIdentityScopes.UsersResolve,
         "EnsureAccount" => AccountsEnsure,
-        "AuthenticatePassword" => KidaIdentityScopes.Authenticate,
+        "AuthenticatePassword" or "AuthenticateTotp" => KidaIdentityScopes.Authenticate,
         "CreateApplicationSession" => SessionsIssue,
         "ValidateSession" => SessionsValidate,
         "RevokeSession" => KidaIdentityScopes.SessionsRevoke,

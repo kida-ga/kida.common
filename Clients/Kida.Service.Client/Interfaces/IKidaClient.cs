@@ -12,6 +12,8 @@ public interface IKidaClient
     ValueTask<FederationStart> BeginFederationAsync(BeginFederationRequest request, CancellationToken cancellationToken = default) =>
         ValueTask.FromException<FederationStart>(new NotSupportedException());
     ValueTask<AuthenticationResult> AuthenticateAsync(AuthenticateRequest request, CancellationToken cancellationToken = default);
+    ValueTask<AuthenticationResult> AuthenticateTotpAsync(AuthenticateTotpRequest request, CancellationToken cancellationToken = default) =>
+        ValueTask.FromException<AuthenticationResult>(new NotSupportedException());
     ValueTask<PasswordlessAuthenticationInitiationResult> BeginPasswordlessAuthenticationAsync(BeginPasswordlessAuthenticationRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<PasswordlessAuthenticationInitiationResult>(new NotSupportedException());
     ValueTask<PasswordlessAuthenticationResult> CompletePasswordlessAuthenticationAsync(CompletePasswordlessAuthenticationRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<PasswordlessAuthenticationResult>(new NotSupportedException());
     ValueTask<AuthenticationResult> RefreshSessionAsync(string refreshToken, CancellationToken cancellationToken = default);

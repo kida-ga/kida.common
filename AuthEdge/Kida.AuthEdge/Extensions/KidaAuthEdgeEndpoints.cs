@@ -50,6 +50,9 @@ public static class KidaAuthEdgeEndpoints
             group.MapPost("/sessions/login", AuthenticateAsync)
                 .RequireRateLimiting(KidaAuthEdgeRateLimits.Authentication)
                 .AllowAnonymous();
+            group.MapPost("/sessions/totp", AuthenticateTotpAsync)
+                .RequireRateLimiting(KidaAuthEdgeRateLimits.Authentication)
+                .AllowAnonymous();
             group.MapPost("/sessions/refresh", RefreshAsync)
                 .RequireRateLimiting(KidaAuthEdgeRateLimits.Authentication)
                 .AllowAnonymous();
@@ -218,6 +221,21 @@ public static class KidaAuthEdgeEndpoints
         {
             return Failure(exception, loggerFactory);
         }
+    }
+
+    private static async Task<IResult> AuthenticateTotpAsync([FromBody] TotpLoginRequest request,
+        HttpContext context, [FromServices] IKidaClient kida, [FromServices] ILoggerFactory loggerFactory,
+        CancellationToken cancellationToken)
+    {
+        context.Response.Headers.CacheControl = "no-store";
+        context.Response.Headers.Pragma = "no-cache";
+        try
+        {
+            return Results.Ok(await kida.AuthenticateTotpAsync(new(request.Email, request.Code, Guid.Empty, string.Empty,
+                request.MethodId, request.Kind, context.Connection.RemoteIpAddress?.ToString(),
+                context.Request.Headers.UserAgent.ToString(), request.DeviceIdentifier), cancellationToken).ConfigureAwait(false));
+        }
+        catch (Exception exception) { return Failure(exception, loggerFactory); }
     }
 
     private static async Task<IResult> RefreshAsync(

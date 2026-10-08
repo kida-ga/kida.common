@@ -32,6 +32,7 @@ public static class IdentityErrorCodes
     public const string VerificationExhausted = "identity.verification_exhausted";
     public const string MfaRequired = "identity.mfa_required";
     public const string MfaInvalid = "identity.mfa_invalid";
+    public const string TotpLoginDisabled = "identity.totp_login_disabled";
     public const string FederationRejected = "identity.federation_rejected";
     public const string SamlCertificateInvalid = "identity.saml_certificate_invalid";
     public const string SamlCertificateConflict = "identity.saml_certificate_conflict";

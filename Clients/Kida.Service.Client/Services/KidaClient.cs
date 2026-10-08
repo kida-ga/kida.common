@@ -48,6 +48,15 @@ internal sealed class KidaClient(
             KidaIdentityScopes.Authenticate,
             cancellationToken).ConfigureAwait(false);
 
+    public async ValueTask<AuthenticationResult> AuthenticateTotpAsync(AuthenticateTotpRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var boundRequest = request with { ClientId = _options.ClientId, Resource = _options.UserAudience };
+        return await SendWithClientTokenAsync<AuthenticationResult>(
+            () => AddIdentityHeaders(CreateJsonRequest("kida/identity/sessions/totp", boundRequest, cancellationToken),
+                username: boundRequest.Email), Method.POST, KidaIdentityScopes.Authenticate, cancellationToken).ConfigureAwait(false);
+    }
+
     public async ValueTask<ProvisionedUser> ProvisionUserAsync(
         ProvisionLocalUserRequest request,
         CancellationToken cancellationToken = default) =>

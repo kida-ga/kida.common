@@ -49,6 +49,8 @@ public interface IKidaClient
     }
     ValueTask<IReadOnlyCollection<AccessRoleInfo>> ListRolesAsync(Guid tenantId, CancellationToken cancellationToken = default);
     ValueTask<AccessResult> CreateRoleAsync(CreateRoleRequest request, CancellationToken cancellationToken = default);
+    ValueTask<AccessResult> UpdateRoleAsync(UpdateRoleRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException<AccessResult>(new NotSupportedException());
+    ValueTask<AccessResult> DeleteRoleAsync(Guid tenantId, Guid roleId, CancellationToken cancellationToken = default) => ValueTask.FromException<AccessResult>(new NotSupportedException());
     ValueTask GrantRoleActionAsync(GrantRoleActionRequest request, CancellationToken cancellationToken = default);
     ValueTask ApplyRoleActionsAsync(ApplyRoleActionsRequest request, CancellationToken cancellationToken = default) => ValueTask.FromException(new NotSupportedException());
     ValueTask EnsureRoleActionAsync(EnsureRoleActionRequest request, CancellationToken cancellationToken = default);

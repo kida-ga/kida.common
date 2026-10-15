@@ -7,6 +7,10 @@ public interface IAccessAdministrationService
     ValueTask<AccessResult> DeleteUnusedPlannedModuleAsync(string moduleCode, CancellationToken cancellationToken = default);
     ValueTask<AccessResult> RegisterModuleAsync(RegisterModuleRequest request, CancellationToken cancellationToken = default);
     ValueTask<AccessResult> CreateRoleAsync(CreateRoleRequest request, CancellationToken cancellationToken = default);
+    ValueTask<AccessResult> UpdateRoleAsync(UpdateRoleRequest request, CancellationToken cancellationToken = default) =>
+        ValueTask.FromException<AccessResult>(new NotSupportedException());
+    ValueTask<AccessResult> DeleteRoleAsync(DeleteRoleRequest request, CancellationToken cancellationToken = default) =>
+        ValueTask.FromException<AccessResult>(new NotSupportedException());
     ValueTask<AccessResult> GrantRoleActionAsync(GrantRoleActionRequest request, CancellationToken cancellationToken = default);
     ValueTask<AccessResult> ApplyRoleActionsAsync(ApplyRoleActionsRequest request, CancellationToken cancellationToken = default);
     ValueTask<AccessResult> EnsureRoleActionAsync(EnsureRoleActionRequest request, CancellationToken cancellationToken = default);

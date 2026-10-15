@@ -23,7 +23,7 @@ public static class KidaIdentityFoundationScopes
         "EnsureAccount" => AccountsEnsure,
         "AuthenticatePassword" or "AuthenticateTotp" => KidaIdentityScopes.Authenticate,
         "CreateApplicationSession" => SessionsIssue,
-        "ValidateSession" => SessionsValidate,
+        "ValidateSession" or "ResolveSession" => SessionsValidate,
         "RevokeSession" => KidaIdentityScopes.SessionsRevoke,
         "ListMfaMethods" or "BeginTotpEnrollment" or "InspectTotpEnrollment" or "ConfirmTotpEnrollment"
             or "RetireMfaMethod" or "ReplaceRecoveryCodes" => MfaManage,

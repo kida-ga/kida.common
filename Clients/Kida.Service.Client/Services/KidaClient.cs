@@ -422,6 +422,30 @@ internal sealed class KidaClient(
             KidaAccessScopes.Administer,
             cancellationToken).ConfigureAwait(false);
 
+    public async ValueTask<AccessResult> UpdateRoleAsync(
+        UpdateRoleRequest request,
+        CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<AccessResult>(
+            () => CreateJsonRequest(
+                $"kida/access/roles/{request.RoleId:D}",
+                request with { Resource = _options.UserAudience },
+                cancellationToken),
+            Method.PUT,
+            KidaAccessScopes.Administer,
+            cancellationToken).ConfigureAwait(false);
+
+    public async ValueTask<AccessResult> DeleteRoleAsync(
+        Guid tenantId,
+        Guid roleId,
+        CancellationToken cancellationToken = default) =>
+        await SendWithClientTokenAsync<AccessResult>(
+            () => CreateRequest($"kida/access/roles/{roleId:D}", cancellationToken)
+                .WithQuery(new QueryParam("tenantId", tenantId.ToString("D")))
+                .WithQuery(new QueryParam("resource", _options.UserAudience)),
+            Method.DELETE,
+            KidaAccessScopes.Administer,
+            cancellationToken).ConfigureAwait(false);
+
     public async ValueTask GrantRoleActionAsync(
         GrantRoleActionRequest request,
         CancellationToken cancellationToken = default) =>

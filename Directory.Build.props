@@ -1,6 +1,11 @@
 <Project>
   <PropertyGroup>
     <KidaUseHaleyPackageReferences Condition="'$(KidaUseHaleyPackageReferences)' == '' and $([System.String]::Copy('$(SolutionName)').EndsWith('_Ref'))">false</KidaUseHaleyPackageReferences>
+    <!-- A Haley source checkout beside Kida is the developer's working copy: build against it by default, -->
+    <!-- because the published packages trail it. Without the checkout (CI, containers) packages are used. -->
+    <_KidaHaleySourceRoot Condition="'$(HaleyProject)' != ''">$(HaleyProject)</_KidaHaleySourceRoot>
+    <_KidaHaleySourceRoot Condition="'$(_KidaHaleySourceRoot)' == ''">$(MSBuildThisFileDirectory)../../HaleyProject</_KidaHaleySourceRoot>
+    <KidaUseHaleyPackageReferences Condition="'$(KidaUseHaleyPackageReferences)' == '' and Exists('$(_KidaHaleySourceRoot)/HaleyAbstractions/HaleyAbstractions/HaleyAbstractions.csproj')">false</KidaUseHaleyPackageReferences>
     <KidaUseHaleyPackageReferences Condition="'$(KidaUseHaleyPackageReferences)' == ''">true</KidaUseHaleyPackageReferences>
   </PropertyGroup>
   <PropertyGroup>
